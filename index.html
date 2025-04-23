@@ -76,6 +76,26 @@
                                     <li>username: User's username</li>
                                     <li>password: User's password</li>
                                 </ul>
+                                <p><strong>Response:</strong></p>
+                                <ul>
+                                    <li>status: "success" or "error"</li>
+                                    <li>message: Response message</li>
+                                    <li>token: Authentication token (on success)</li>
+                                    <li>admin: Boolean indicating admin status (on success)</li>
+                                    <li>id: User ID (on success)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="endpoint">
+                            <h4>Logout</h4>
+                            <p>Invalidate the current session token.</p>
+                            <pre>GET ?logout&token={token}</pre>
+                            <div class="params">
+                                <p><strong>Required Parameters:</strong></p>
+                                <ul>
+                                    <li>token: Current authentication token</li>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -84,12 +104,23 @@
                         <h3>Messages</h3>
                         <div class="endpoint">
                             <h4>Get All Messages</h4>
-                            <p>Retrieve all messages.</p>
+                            <p>Retrieve all messages with author information.</p>
                             <pre>GET ?getAll&token={token}</pre>
                             <div class="params">
                                 <p><strong>Required Parameters:</strong></p>
                                 <ul>
                                     <li>token: Authentication token</li>
+                                </ul>
+                                <p><strong>Response:</strong></p>
+                                <ul>
+                                    <li>Array of message objects containing:</li>
+                                    <li>- id: Message ID</li>
+                                    <li>- display_name: Author's display name</li>
+                                    <li>- title: Message title</li>
+                                    <li>- message: Message content</li>
+                                    <li>- image: Image URL (if any)</li>
+                                    <li>- date: Creation timestamp</li>
+                                    <li>- author: Author's user ID</li>
                                 </ul>
                             </div>
                         </div>
@@ -110,12 +141,18 @@
                                 <ul>
                                     <li>data[image]: Image URL</li>
                                 </ul>
+                                <p><strong>Response:</strong></p>
+                                <ul>
+                                    <li>status: "success" or "error"</li>
+                                    <li>message: Response message</li>
+                                    <li>id: New message ID (on success)</li>
+                                </ul>
                             </div>
                         </div>
 
                         <div class="endpoint">
                             <h4>Update Message</h4>
-                            <p>Update an existing message.</p>
+                            <p>Update an existing message. Only the message owner can update it.</p>
                             <pre>POST ?token={token}</pre>
                             <div class="params">
                                 <p><strong>Required Parameters:</strong></p>
@@ -123,25 +160,124 @@
                                     <li>update: Set to 1</li>
                                     <li>id: Message ID</li>
                                     <li>data[author]: User ID</li>
-                                    <li>data[title]: Message title</li>
-                                    <li>data[message]: Message content</li>
                                 </ul>
                                 <p><strong>Optional Parameters:</strong></p>
                                 <ul>
-                                    <li>data[image]: Image URL</li>
+                                    <li>data[title]: New message title</li>
+                                    <li>data[message]: New message content</li>
+                                    <li>data[image]: New image URL</li>
+                                </ul>
+                                <p><strong>Response:</strong></p>
+                                <ul>
+                                    <li>status: "success" or "error"</li>
+                                    <li>message: Response message</li>
                                 </ul>
                             </div>
                         </div>
 
                         <div class="endpoint">
                             <h4>Delete Message</h4>
-                            <p>Delete a message.</p>
+                            <p>Delete a message. Only the message owner can delete it.</p>
                             <pre>POST ?token={token}</pre>
                             <div class="params">
                                 <p><strong>Required Parameters:</strong></p>
                                 <ul>
                                     <li>delete: Set to 1</li>
                                     <li>id: Message ID</li>
+                                </ul>
+                                <p><strong>Response:</strong></p>
+                                <ul>
+                                    <li>status: "success" or "error"</li>
+                                    <li>message: Response message</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="endpoint-group">
+                        <h3>User Management (Admin Only)</h3>
+                        <div class="endpoint">
+                            <h4>Add User</h4>
+                            <p>Create a new user account. Requires admin privileges.</p>
+                            <pre>POST ?token={token}</pre>
+                            <div class="params">
+                                <p><strong>Required Parameters:</strong></p>
+                                <ul>
+                                    <li>addUser: Set to 1</li>
+                                    <li>data[username]: Username</li>
+                                    <li>data[password]: Password</li>
+                                    <li>data[display_name]: Display name</li>
+                                    <li>data[email]: Email address</li>
+                                    <li>data[admin]: Admin status (0 or 1)</li>
+                                </ul>
+                                <p><strong>Response:</strong></p>
+                                <ul>
+                                    <li>status: "success" or "error"</li>
+                                    <li>id: New user ID (on success)</li>
+                                    <li>message: Error message (on error)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="endpoint">
+                            <h4>Get All Users</h4>
+                            <p>Retrieve all user accounts. Requires admin privileges.</p>
+                            <pre>POST ?token={token}&getAllUsers=1</pre>
+                            <div class="params">
+                                <p><strong>Required Parameters:</strong></p>
+                                <ul>
+                                    <li>getAllUsers: Set to 1</li>
+                                </ul>
+                                <p><strong>Response:</strong></p>
+                                <ul>
+                                    <li>Array of user objects containing:</li>
+                                    <li>- id: User ID</li>
+                                    <li>- username: Username</li>
+                                    <li>- display_name: Display name</li>
+                                    <li>- email: Email address</li>
+                                    <li>- admin: Admin status</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="endpoint">
+                            <h4>Delete User</h4>
+                            <p>Delete a user account. Requires admin privileges.</p>
+                            <pre>POST ?token={token}</pre>
+                            <div class="params">
+                                <p><strong>Required Parameters:</strong></p>
+                                <ul>
+                                    <li>deleteUser: Set to 1</li>
+                                    <li>id: User ID to delete</li>
+                                </ul>
+                                <p><strong>Response:</strong></p>
+                                <ul>
+                                    <li>status: "success" or "error"</li>
+                                    <li>message: Response message</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="endpoint">
+                            <h4>Update User</h4>
+                            <p>Update a user account. Users can update their own information, or admins can update any user.</p>
+                            <pre>POST ?token={token}</pre>
+                            <div class="params">
+                                <p><strong>Required Parameters:</strong></p>
+                                <ul>
+                                    <li>updateUser: Set to 1</li>
+                                    <li>id: User ID to update</li>
+                                </ul>
+                                <p><strong>Optional Parameters:</strong></p>
+                                <ul>
+                                    <li>data[display_name]: New display name</li>
+                                    <li>data[email]: New email address</li>
+                                    <li>data[password]: New password</li>
+                                </ul>
+                                <p><strong>Response:</strong></p>
+                                <ul>
+                                    <li>status: "success" or "error"</li>
+                                    <li>message: Response message</li>
                                 </ul>
                             </div>
                         </div>
