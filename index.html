@@ -28,8 +28,17 @@
                     <button id="login-btn">Login</button>
                 </div>
                 <div id="chat-container" class="hidden">
+                    <div class="header-actions">
+                        <button id="logout-btn">Logout</button>
+                    </div>
                     <div id="conversations"></div>
-                    <button id="logout-btn">Logout</button>
+                    <div id="message-form" class="card">
+                        <input type="hidden" id="edit-message-id">
+                        <input type="text" id="message-title" placeholder="Message Title">
+                        <textarea id="message-content" placeholder="Type your message"></textarea>
+                        <input type="text" id="message-image" placeholder="Image URL (optional)">
+                        <button id="send-btn">Send</button>
+                    </div>
                 </div>
             </section>
 

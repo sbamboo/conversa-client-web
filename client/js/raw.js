@@ -1,4 +1,4 @@
-import { showNotice, formatJson } from '../../js/utils.js';
+import { showNotice, formatJson } from './utils.js';
 
 export function initializeRawTab(apiUrlInput) {
     const sendRawBtn = document.getElementById('sendRaw');

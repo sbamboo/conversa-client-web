@@ -88,16 +88,23 @@ nav {
     padding: 2rem;
     border-radius: 0.5rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem;
 }
 
 input[type="text"],
-input[type="password"] {
+input[type="password"],
+textarea {
     width: 100%;
     padding: 0.75rem;
     margin-bottom: 1rem;
     border: 1px solid var(--border-color);
     border-radius: 0.5rem;
     font-size: 1rem;
+}
+
+textarea {
+    min-height: 100px;
+    resize: vertical;
 }
 
 button {
@@ -124,6 +131,12 @@ button:hover {
     padding: 2rem;
     border-radius: 0.5rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.header-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1rem;
 }
 
 .raw-container {
@@ -182,4 +195,28 @@ button:hover {
     margin-left: auto;
     background-color: var(--primary-color);
     color: white;
+    max-width: 80%;
+}
+
+.message.received {
+    margin-right: auto;
+    max-width: 80%;
+}
+
+.message-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.message-actions button {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+    background-color: transparent;
+    border: 1px solid white;
+    color: white;
+}
+
+.message-actions button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
 }

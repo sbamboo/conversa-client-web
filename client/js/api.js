@@ -5,6 +5,10 @@ export class ConversaApiV0 {
         this.userId = null;
     }
 
+    updateUrl(newUrl) {
+        this.baseUrl = newUrl;
+    }
+
     async login(username, password) {
         try {
             const response = await fetch(`${this.baseUrl}?validate&username=${username}&password=${password}`);
@@ -41,6 +45,28 @@ export class ConversaApiV0 {
         try {
             const formData = new FormData();
             formData.append('add', '1');
+            formData.append('data[author]', this.userId);
+            formData.append('data[title]', title);
+            formData.append('data[message]', message);
+            formData.append('data[image]', image);
+
+            const response = await fetch(`${this.baseUrl}?token=${this.token}`, {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+            return { success: data.status === "success", data };
+        } catch (error) {
+            return { success: false, error: "Network error occurred" };
+        }
+    }
+
+    async updateMessage(messageId, title, message, image = "") {
+        try {
+            const formData = new FormData();
+            formData.append('update', '1');
+            formData.append('id', messageId);
             formData.append('data[author]', this.userId);
             formData.append('data[title]', title);
             formData.append('data[message]', message);
