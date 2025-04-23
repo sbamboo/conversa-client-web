@@ -1,4 +1,4 @@
-import { showNotice, formatJson } from './utils.js';
+import { showNotice, formatJson } from '../../js/utils.js';
 
 export function initializeRawTab(apiUrlInput) {
     const sendRawBtn = document.getElementById('sendRaw');
@@ -19,6 +19,7 @@ export function initializeRawTab(apiUrlInput) {
             const params = rawInput.value;
             const url = `${apiUrlInput.value}${params}`;
             
+            console.log('Fetching URL:', url);
             const response = await fetch(url);
             const data = await response.json();
             

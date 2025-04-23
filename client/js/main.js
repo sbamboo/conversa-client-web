@@ -1,6 +1,7 @@
 import { ConversaApiV0 } from './api.js';
-import { showNotice } from './utils.js';
-import { initializeRawTab } from './raw.js';
+import { showNotice } from '../../js/utils.js';
+import { initializeTabs } from '../../js/tabs.js';
+import { initializeRawTab } from '../../raw/js/raw.js';
 
 let api;
 
@@ -20,20 +21,6 @@ function init() {
 
     // Initialize logout button
     document.getElementById('logout-btn').addEventListener('click', handleLogout);
-}
-
-function initializeTabs() {
-    const tabs = document.querySelectorAll('.tab-btn');
-    tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            tabs.forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-            
-            const tabContents = document.querySelectorAll('.tab-content');
-            tabContents.forEach(content => content.classList.remove('active'));
-            document.getElementById(tab.dataset.tab).classList.add('active');
-        });
-    });
 }
 
 function initializeLoginForm() {
