@@ -1,0 +1,27 @@
+.json-key {
+    color: #f59e0b;
+}
+
+.json-string {
+    color: #22c55e;
+}
+
+.json-number {
+    color: #3b82f6;
+}
+
+.json-boolean {
+    color: #8b5cf6;
+}
+
+.json-null {
+    color: #ef4444;
+}
+
+.json-bracket {
+    color: #ffffff;
+}
+
+.json-comma {
+    color: #ffffff;
+}

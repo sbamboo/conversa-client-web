@@ -1,0 +1,32 @@
+.notice-card {
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.notice-card.error {
+    background-color: #fee2e2;
+    border: 1px solid #ef4444;
+    color: #991b1b;
+}
+
+.notice-card.success {
+    background-color: #dcfce7;
+    border: 1px solid #22c55e;
+    color: #166534;
+}
+
+.notice-card.warning {
+    background-color: #fef3c7;
+    border: 1px solid #f59e0b;
+    color: #92400e;
+}
+
+.notice-card.info {
+    background-color: #dbeafe;
+    border: 1px solid #3b82f6;
+    color: #1e40af;
+}

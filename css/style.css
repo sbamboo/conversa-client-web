@@ -1,0 +1,185 @@
+:root {
+    --primary-color: #2563eb;
+    --secondary-color: #1d4ed8;
+    --background-color: #f3f4f6;
+    --card-background: #ffffff;
+    --text-color: #1f2937;
+    --border-color: #e5e7eb;
+    --text-muted: #6b7280;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.5;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+header {
+    margin-bottom: 2rem;
+}
+
+#apiUrl {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    font-size: 1rem;
+}
+
+nav {
+    display: flex;
+    gap: 0;
+    margin-bottom: 0;
+    border-bottom: 2px solid var(--border-color);
+    padding: 0 1rem;
+}
+
+.tab-btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 0.5rem 0.5rem 0 0;
+    background-color: var(--background-color);
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.2s;
+    margin-bottom: -2px;
+    border: 2px solid transparent;
+    border-bottom: none;
+}
+
+.tab-btn:hover {
+    background-color: var(--card-background);
+}
+
+.tab-btn.active {
+    background-color: var(--card-background);
+    color: var(--primary-color);
+    border-color: var(--border-color);
+    border-bottom: 2px solid var(--card-background);
+}
+
+.tab-content {
+    display: none;
+    background-color: var(--card-background);
+    border-radius: 0 0 0.5rem 0.5rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.card {
+    background-color: var(--card-background);
+    padding: 2rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    font-size: 1rem;
+}
+
+button {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    background-color: var(--primary-color);
+    color: white;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.2s;
+}
+
+button:hover {
+    background-color: var(--secondary-color);
+}
+
+.hidden {
+    display: none;
+}
+
+#chat-container {
+    background-color: var(--card-background);
+    padding: 2rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.raw-container {
+    background-color: var(--card-background);
+    padding: 2rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.input-group {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.input-group input {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.api-url-display {
+    color: var(--text-muted);
+    font-family: monospace;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 300px;
+}
+
+#rawOutput {
+    background-color: #1a1a1a;
+    color: #ffffff;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+}
+
+#conversations {
+    margin-bottom: 2rem;
+}
+
+.conversation {
+    border-bottom: 1px solid var(--border-color);
+    padding: 1rem 0;
+}
+
+.message {
+    padding: 0.75rem;
+    margin: 0.5rem 0;
+    border-radius: 0.5rem;
+    background-color: var(--background-color);
+}
+
+.message.sent {
+    margin-left: auto;
+    background-color: var(--primary-color);
+    color: white;
+}
