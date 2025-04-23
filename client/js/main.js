@@ -52,6 +52,7 @@ function initializeLoginForm() {
 function initializeMessageForm() {
     const messageForm = document.getElementById('message-form');
     const sendBtn = document.getElementById('send-btn');
+    const editMessageId = document.getElementById('edit-message-id');
 
     sendBtn.addEventListener('click', async () => {
         const title = document.getElementById('message-title').value;
@@ -63,17 +64,57 @@ function initializeMessageForm() {
             return;
         }
 
-        const result = await api.sendMessage(title, message, image);
+        let result;
+        if (editMessageId.value) {
+            // Update existing message
+            result = await api.updateMessage(editMessageId.value, title, message, image);
+            if (result.success) {
+                editMessageId.value = '';
+                sendBtn.textContent = 'Send';
+            }
+        } else {
+            // Send new message
+            result = await api.sendMessage(title, message, image);
+        }
         
         if (result.success) {
             document.getElementById('message-title').value = '';
             document.getElementById('message-content').value = '';
             document.getElementById('message-image').value = '';
             loadConversations();
-            showNotice('Message sent successfully', 'success');
+            showNotice(editMessageId.value ? 'Message updated successfully' : 'Message sent successfully', 'success');
         } else {
             showNotice(result.error, 'error');
         }
+    });
+
+    // Add cancel edit button
+    const cancelEditBtn = document.createElement('button');
+    cancelEditBtn.textContent = 'Cancel Edit';
+    cancelEditBtn.style.display = 'none';
+    cancelEditBtn.classList.add('cancel-edit-btn');
+    sendBtn.parentNode.insertBefore(cancelEditBtn, sendBtn.nextSibling);
+
+    cancelEditBtn.addEventListener('click', () => {
+        editMessageId.value = '';
+        document.getElementById('message-title').value = '';
+        document.getElementById('message-content').value = '';
+        document.getElementById('message-image').value = '';
+        sendBtn.textContent = 'Send';
+        cancelEditBtn.style.display = 'none';
+    });
+
+    // Show/hide cancel button based on edit state
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'value') {
+                cancelEditBtn.style.display = editMessageId.value ? 'inline-block' : 'none';
+            }
+        });
+    });
+
+    observer.observe(editMessageId, {
+        attributes: true
     });
 }
 
@@ -103,23 +144,26 @@ function groupMessagesByConversation(messages) {
 }
 
 async function handleMessageDelete(messageId) {
-    const result = await api.deleteMessage(messageId);
-    if (result.success) {
-        loadConversations();
-        showNotice('Message deleted successfully', 'success');
-    } else {
-        showNotice(result.error, 'error');
+    if (confirm('Are you sure you want to delete this message?')) {
+        const result = await api.deleteMessage(messageId);
+        if (result.success) {
+            loadConversations();
+            showNotice('Message deleted successfully', 'success');
+        } else {
+            showNotice(result.error, 'error');
+        }
     }
 }
 
-async function handleMessageEdit(messageId, title, message, image) {
-    const result = await api.updateMessage(messageId, title, message, image);
-    if (result.success) {
-        loadConversations();
-        showNotice('Message updated successfully', 'success');
-    } else {
-        showNotice(result.error, 'error');
-    }
+function handleMessageEdit(message) {
+    document.getElementById('message-title').value = message.title;
+    document.getElementById('message-content').value = message.message;
+    document.getElementById('message-image').value = message.image || '';
+    document.getElementById('edit-message-id').value = message.id;
+    document.getElementById('send-btn').textContent = 'Update';
+    
+    // Scroll to the message form
+    document.getElementById('message-form').scrollIntoView({ behavior: 'smooth' });
 }
 
 function displayConversations(conversations) {
@@ -153,28 +197,20 @@ function displayConversations(conversations) {
                 messageEl.appendChild(imageEl);
             }
 
-            if (message.author === api.userId) {
-                const actionsEl = document.createElement('div');
-                actionsEl.className = 'message-actions';
+            const actionsEl = document.createElement('div');
+            actionsEl.className = 'message-actions';
 
-                const editBtn = document.createElement('button');
-                editBtn.textContent = 'Edit';
-                editBtn.onclick = () => {
-                    document.getElementById('message-title').value = message.title;
-                    document.getElementById('message-content').value = message.message;
-                    document.getElementById('message-image').value = message.image;
-                    document.getElementById('edit-message-id').value = message.id;
-                    document.getElementById('send-btn').textContent = 'Update';
-                };
-                actionsEl.appendChild(editBtn);
+            const editBtn = document.createElement('button');
+            editBtn.textContent = 'Edit';
+            editBtn.onclick = () => handleMessageEdit(message);
+            actionsEl.appendChild(editBtn);
 
-                const deleteBtn = document.createElement('button');
-                deleteBtn.textContent = 'Delete';
-                deleteBtn.onclick = () => handleMessageDelete(message.id);
-                actionsEl.appendChild(deleteBtn);
+            const deleteBtn = document.createElement('button');
+            deleteBtn.textContent = 'Delete';
+            deleteBtn.onclick = () => handleMessageDelete(message.id);
+            actionsEl.appendChild(deleteBtn);
 
-                messageEl.appendChild(actionsEl);
-            }
+            messageEl.appendChild(actionsEl);
 
             conversationEl.appendChild(messageEl);
         });

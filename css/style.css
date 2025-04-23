@@ -189,6 +189,7 @@ button:hover {
     margin: 0.5rem 0;
     border-radius: 0.5rem;
     background-color: var(--background-color);
+    position: relative;
 }
 
 .message.sent {
@@ -212,11 +213,33 @@ button:hover {
 .message-actions button {
     padding: 0.25rem 0.75rem;
     font-size: 0.875rem;
+}
+
+.message.sent .message-actions button {
     background-color: transparent;
     border: 1px solid white;
     color: white;
 }
 
-.message-actions button:hover {
+.message.sent .message-actions button:hover {
     background-color: rgba(255, 255, 255, 0.1);
+}
+
+.message.received .message-actions button {
+    background-color: var(--primary-color);
+    border: none;
+    color: white;
+}
+
+.message.received .message-actions button:hover {
+    background-color: var(--secondary-color);
+}
+
+.cancel-edit-btn {
+    background-color: #ef4444;
+    margin-left: 0.5rem;
+}
+
+.cancel-edit-btn:hover {
+    background-color: #dc2626;
 }
