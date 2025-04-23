@@ -93,7 +93,8 @@ nav {
 
 input[type="text"],
 input[type="password"],
-textarea {
+textarea,
+select {
     width: 100%;
     padding: 0.75rem;
     margin-bottom: 1rem;
@@ -155,6 +156,11 @@ button:hover {
 
 .input-group input {
     flex: 1;
+    margin-bottom: 0;
+}
+
+.http-method-select {
+    width: auto;
     margin-bottom: 0;
 }
 
@@ -242,4 +248,75 @@ button:hover {
 
 .cancel-edit-btn:hover {
     background-color: #dc2626;
+}
+
+/* Info tab styles */
+.info-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.info-container h2 {
+    margin-bottom: 2rem;
+    color: var(--text-color);
+}
+
+.endpoint-group {
+    margin-bottom: 2rem;
+}
+
+.endpoint-group h3 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.endpoint {
+    background-color: var(--background-color);
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.endpoint h4 {
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+}
+
+.endpoint p {
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+}
+
+.endpoint pre {
+    background-color: #1a1a1a;
+    color: #ffffff;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin-bottom: 1rem;
+}
+
+.params {
+    background-color: var(--card-background);
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+
+.params p {
+    margin-bottom: 0.5rem;
+}
+
+.params ul {
+    list-style-type: none;
+    margin-left: 1rem;
+    margin-bottom: 1rem;
+}
+
+.params ul:last-child {
+    margin-bottom: 0;
+}
+
+.params li {
+    color: var(--text-muted);
+    margin-bottom: 0.25rem;
 }

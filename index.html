@@ -17,6 +17,7 @@
         <nav>
             <button class="tab-btn active" data-tab="client">Client</button>
             <button class="tab-btn" data-tab="raw">Raw</button>
+            <button class="tab-btn" data-tab="info">Info</button>
         </nav>
 
         <main>
@@ -46,10 +47,105 @@
                 <div class="raw-container">
                     <div class="input-group">
                         <span class="api-url-display"></span>
-                        <input type="text" id="rawInput" placeholder="Enter parameters">
+                        <select id="httpMethod" class="http-method-select">
+                            <option value="GET">GET</option>
+                            <option value="POST">POST</option>
+                            <option value="DELETE">DELETE</option>
+                            <option value="UPDATE">UPDATE</option>
+                        </select>
+                        <input type="text" id="rawInput" placeholder="Enter parameters (for GET) or JSON data (for other methods)">
                         <button id="sendRaw">Send</button>
                     </div>
                     <pre id="rawOutput"></pre>
+                </div>
+            </section>
+
+            <section id="info" class="tab-content">
+                <div class="info-container">
+                    <h2>API Documentation</h2>
+                    
+                    <div class="endpoint-group">
+                        <h3>Authentication</h3>
+                        <div class="endpoint">
+                            <h4>Login</h4>
+                            <p>Authenticate a user and get a token.</p>
+                            <pre>GET ?validate&username={username}&password={password}</pre>
+                            <div class="params">
+                                <p><strong>Required Parameters:</strong></p>
+                                <ul>
+                                    <li>username: User's username</li>
+                                    <li>password: User's password</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="endpoint-group">
+                        <h3>Messages</h3>
+                        <div class="endpoint">
+                            <h4>Get All Messages</h4>
+                            <p>Retrieve all messages.</p>
+                            <pre>GET ?getAll&token={token}</pre>
+                            <div class="params">
+                                <p><strong>Required Parameters:</strong></p>
+                                <ul>
+                                    <li>token: Authentication token</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="endpoint">
+                            <h4>Add Message</h4>
+                            <p>Create a new message.</p>
+                            <pre>POST ?token={token}</pre>
+                            <div class="params">
+                                <p><strong>Required Parameters:</strong></p>
+                                <ul>
+                                    <li>add: Set to 1</li>
+                                    <li>data[author]: User ID</li>
+                                    <li>data[title]: Message title</li>
+                                    <li>data[message]: Message content</li>
+                                </ul>
+                                <p><strong>Optional Parameters:</strong></p>
+                                <ul>
+                                    <li>data[image]: Image URL</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="endpoint">
+                            <h4>Update Message</h4>
+                            <p>Update an existing message.</p>
+                            <pre>POST ?token={token}</pre>
+                            <div class="params">
+                                <p><strong>Required Parameters:</strong></p>
+                                <ul>
+                                    <li>update: Set to 1</li>
+                                    <li>id: Message ID</li>
+                                    <li>data[author]: User ID</li>
+                                    <li>data[title]: Message title</li>
+                                    <li>data[message]: Message content</li>
+                                </ul>
+                                <p><strong>Optional Parameters:</strong></p>
+                                <ul>
+                                    <li>data[image]: Image URL</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="endpoint">
+                            <h4>Delete Message</h4>
+                            <p>Delete a message.</p>
+                            <pre>POST ?token={token}</pre>
+                            <div class="params">
+                                <p><strong>Required Parameters:</strong></p>
+                                <ul>
+                                    <li>delete: Set to 1</li>
+                                    <li>id: Message ID</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
         </main>
