@@ -26,6 +26,9 @@ function init() {
 
     // Initialize message form
     initializeMessageForm();
+
+    // Initialize admin cancel button
+    initializeAdminCancelButton();
 }
 
 function initializeLoginForm() {
@@ -125,6 +128,41 @@ function initializeMessageForm() {
 
     observer.observe(editMessageId, {
         attributes: true
+    });
+}
+
+function initializeAdminCancelButton() {
+    const form = document.getElementById('admin-user-form');
+    const saveBtn = document.getElementById('save-user-btn');
+    
+    // Create and add cancel button
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = 'Cancel';
+    cancelBtn.type = 'button';
+    cancelBtn.classList.add('cancel-edit-btn');
+    cancelBtn.style.display = 'none';
+    saveBtn.parentNode.insertBefore(cancelBtn, saveBtn.nextSibling);
+
+    // Show/hide cancel button based on whether we're editing
+    const userIdInput = document.getElementById('user-id');
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'value') {
+                cancelBtn.style.display = userIdInput.value ? 'inline-block' : 'none';
+            }
+        });
+    });
+
+    observer.observe(userIdInput, {
+        attributes: true
+    });
+
+    // Handle cancel button click
+    cancelBtn.addEventListener('click', () => {
+        form.reset();
+        userIdInput.value = '';
+        saveBtn.textContent = 'Add User';
+        cancelBtn.style.display = 'none';
     });
 }
 
