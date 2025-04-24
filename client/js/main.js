@@ -4,6 +4,7 @@ import { initializeTabs } from '../../js/tabs.js';
 import { initializeRawTab } from '../../raw/js/raw.js';
 
 let api;
+let newestFirst = false;
 
 // Initialize the application
 function init() {
@@ -21,7 +22,18 @@ function init() {
     initializeLoginForm();
     initializeMessageForm();
     initializeAdminCancelButton();
+    initializeSortButton();
 }
+
+function initializeSortButton() {
+    const sortBtn = document.getElementById('sort-messages-btn');
+    sortBtn.addEventListener('click', () => {
+        newestFirst = !newestFirst;
+        sortBtn.textContent = `Sort: Newest ${newestFirst ? 'First' : 'Last'}`;
+        loadConversations();
+    });
+}
+
 
 function initializeLoginForm() {
     const loginForm = document.getElementById('login-form');
@@ -177,6 +189,15 @@ function groupMessagesByConversation(messages) {
             conversations[key] = [];
         }
         conversations[key].push(message);
+    });
+
+    // Sort messages by date within each conversation
+    Object.values(conversations).forEach(messages => {
+        messages.sort((a, b) => {
+            const dateA = new Date(a.date);
+            const dateB = new Date(b.date);
+            return newestFirst ? dateB - dateA : dateA - dateB;
+        });
     });
 
     return conversations;

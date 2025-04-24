@@ -468,3 +468,14 @@ footer a,footer a:visited,footer a:active {
 footer a:hover {
     color: var(--primary-color);
 }
+
+.sort-messages-btn {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    margin-right: auto;
+}
+
+.sort-messages-btn:hover {
+    background-color: var(--card-background-gray);
+}
