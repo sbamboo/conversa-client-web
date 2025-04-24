@@ -295,10 +295,6 @@ function displayUsers(users) {
             <p><strong>Username:</strong> ${user.username}</p>
             <p><strong>Email:</strong> ${user.email}</p>
             <p><strong>Admin:</strong> ${user.admin === '1' ? 'Yes' : 'No'}</p>
-            <div class="token-info">
-                <p><strong>Token:</strong> ${user.valid_token || 'N/A'}</p>
-                <p><strong>Token Expiration:</strong> ${user.token_expiration || 'N/A'}</p>
-            </div>
         `;
         userEl.appendChild(detailsEl);
 
@@ -338,18 +334,12 @@ function handleUserEdit(user) {
     document.getElementById('user-username').value = user.username;
     document.getElementById('user-display-name').value = user.display_name;
     document.getElementById('user-email').value = user.email;
-    document.getElementById('user-password').value = user.password || '';
-    document.getElementById('user-token').value = user.valid_token || '';
-    // set seconds to 00 if user.token_expiration contains seconds
-    if (user.token_expiration && user.token_expiration.includes(':')) {
-        const parts = user.token_expiration.split(':');
-        if (parts.length === 3) {
-            user.token_expiration = `${parts[0]}:${parts[1]}:00`;
-        }
-    }
-    document.getElementById('user-token-expiration').value = user.token_expiration ? user.token_expiration.replace(' ', 'T') : '';
+    document.getElementById('user-password').value = user.password;
     document.getElementById('user-is-admin').checked = user.admin === '1';
     document.getElementById('save-user-btn').textContent = 'Update User';
+
+    // Scroll to the user form
+    form.scrollIntoView({ behavior: 'smooth' });
 }
 
 function handleLogout() {
@@ -395,25 +385,14 @@ document.getElementById('admin-user-form').addEventListener('submit', async (e) 
     const password = document.getElementById('user-password').value;
     const username = document.getElementById('user-username').value;
     const isAdmin = document.getElementById('user-is-admin').checked;
-    let token = document.getElementById('user-token').value;
-    let token_expiration = document.getElementById('user-token-expiration').value;
-
-    // if token is string and empty set to null
-    if (token === '') {
-        token = null;
-    }
-    // if token_expiration is string and empty set to null
-    if (token_expiration === '') {
-        token_expiration = null;
-    }
 
     let result;
     if (userId) {
         // Update existing user
-        result = await api.admin_updateUser(userId, displayName, email, password || null, token, token_expiration);
+        result = await api.admin_updateUser(userId, displayName, email, password || null);
     } else {
         // Add new user
-        result = await api.admin_addUser(username, password, displayName, email, isAdmin, token, token_expiration);
+        result = await api.admin_addUser(username, password, displayName, email, isAdmin);
     }
 
     if (result.success) {
@@ -423,7 +402,11 @@ document.getElementById('admin-user-form').addEventListener('submit', async (e) 
         loadUsers();
         showNotice(userId ? 'User updated successfully' : 'User added successfully', 'success');
     } else {
-        showNotice(result.error, 'error');
+        if (result.data) {
+            showNotice(result.data.error || result.data.message, 'error');
+        } else {
+            showNotice(result.error || result.message, 'error');
+        }
     }
 });
 

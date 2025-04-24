@@ -122,7 +122,7 @@ export class ConversaApiV0 {
         }
     }
 
-    async admin_addUser(username, password, displayName, email, isAdmin = false, token = null, tokenExpiration = null) {
+    async admin_addUser(username, password, displayName, email, isAdmin = false) {
         try {
             const formData = new FormData();
             formData.append('addUser', '1');
@@ -131,9 +131,6 @@ export class ConversaApiV0 {
             formData.append('data[display_name]', displayName);
             formData.append('data[email]', email);
             formData.append('data[admin]', isAdmin ? '1' : '0');
-            
-            if (token) formData.append('data[valid_token]', token);
-            if (tokenExpiration) formData.append('data[token_expiration]', tokenExpiration);
 
             const response = await fetch(`${this.baseUrl}?token=${this.token}`, {
                 method: 'POST',
@@ -147,7 +144,7 @@ export class ConversaApiV0 {
         }
     }
 
-    async admin_updateUser(userId, displayName, email, password = null, token = null, tokenExpiration = null) {
+    async admin_updateUser(userId, displayName, email, password = null) {
         try {
             const formData = new FormData();
             formData.append('updateUser', '1');
@@ -157,8 +154,6 @@ export class ConversaApiV0 {
             if (displayName) data.display_name = displayName;
             if (email) data.email = email;
             if (password) data.password = password;
-            if (token) data.valid_token = token;
-            if (tokenExpiration) data.token_expiration = tokenExpiration;
 
             Object.entries(data).forEach(([key, value]) => {
                 formData.append(`data[${key}]`, value);
@@ -190,7 +185,7 @@ export class ConversaApiV0 {
             const data = await response.json();
             return { success: data.status === "success", data };
         } catch (error) {
-            return { success: false, error: "Network error occurred" };
+            return { success: false, error: "Network error occurred: " + error.message + "; " + rawData };
         }
     }
 
