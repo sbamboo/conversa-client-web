@@ -228,7 +228,7 @@ function displayConversations(conversations) {
 
         messages.forEach(message => {
             const messageEl = document.createElement('div');
-            messageEl.className = `message ${message.author === api.userId ? 'sent' : 'received'}`;
+            messageEl.className = `message ${parseInt(message.author) === api.userId ? 'sent' : ''}`;
             
             const titleEl = document.createElement('strong');
             titleEl.textContent = message.title;
@@ -240,6 +240,7 @@ function displayConversations(conversations) {
 
             if (message.image) {
                 const imageEl = document.createElement('img');
+                imageEl.className = 'message-image';
                 imageEl.src = message.image;
                 imageEl.alt = message.title;
                 messageEl.appendChild(imageEl);

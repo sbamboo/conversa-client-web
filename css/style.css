@@ -200,18 +200,13 @@ button:hover {
     border-radius: 0.5rem;
     background-color: var(--background-color);
     position: relative;
+    max-width: 80%;
+    margin-left: 0;
 }
 
 .message.sent {
     margin-left: auto;
-    background-color: var(--primary-color);
-    color: white;
-    max-width: 80%;
-}
-
-.message.received {
-    margin-right: auto;
-    max-width: 80%;
+    margin-right: 0;
 }
 
 .message-actions {
@@ -224,24 +219,13 @@ button:hover {
     padding: 0.25rem 0.75rem;
     font-size: 0.875rem;
 }
-
-.message.sent .message-actions button {
-    background-color: transparent;
-    border: 1px solid white;
-    color: white;
-}
-
-.message.sent .message-actions button:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-.message.received .message-actions button {
+.message .message-actions button {
     background-color: var(--primary-color);
     border: none;
     color: white;
 }
 
-.message.received .message-actions button:hover {
+.message .message-actions button:hover {
     background-color: var(--secondary-color);
 }
 
@@ -252,6 +236,12 @@ button:hover {
 
 .cancel-edit-btn:hover {
     background-color: #dc2626;
+}
+
+.message-image {
+    width: 100%;
+    object-fit: contain;
+    border-radius: 0.5rem;
 }
 
 /* Admin panel styles */
