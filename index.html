@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conversa Client</title>
+    <title>Conversa Web Client</title>
     <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" href="./css/notice_cards.css">
     <link rel="stylesheet" href="./raw/css/json.css">
@@ -30,6 +30,7 @@
                 </div>
                 <div id="chat-container" class="hidden">
                     <div class="header-actions">
+                        <button id="admin-btn" class="hidden">Admin</button>
                         <button id="logout-btn">Logout</button>
                     </div>
                     <div id="conversations"></div>
@@ -40,6 +41,27 @@
                         <input type="text" id="message-image" placeholder="Image URL (optional)">
                         <button id="send-btn">Send</button>
                     </div>
+                </div>
+                <div id="admin-panel" class="hidden">
+                    <div class="header-actions">
+                        <button id="admin-close-btn">×</button>
+                    </div>
+                    <h2>User Management</h2>
+                    <form id="admin-user-form" class="card">
+                        <input type="hidden" id="user-id">
+                        <input type="text" id="user-username" placeholder="Username">
+                        <input type="text" id="user-display-name" placeholder="Display Name">
+                        <input type="email" id="user-email" placeholder="Email">
+                        <input type="password" id="user-password" placeholder="Password">
+                        <input type="text" id="user-token" placeholder="Valid Token (optional)">
+                        <input type="datetime-local" id="user-token-expiration" placeholder="Token Expiration (optional)">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="user-is-admin">
+                            <label for="user-is-admin">Is Admin</label>
+                        </div>
+                        <button type="submit" id="save-user-btn">Add User</button>
+                    </form>
+                    <div id="admin-users"></div>
                 </div>
             </section>
 

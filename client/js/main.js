@@ -41,6 +41,16 @@ function initializeLoginForm() {
         if (result.success) {
             loginForm.classList.add('hidden');
             document.getElementById('chat-container').classList.remove('hidden');
+            
+            // Show admin button if user is admin
+            const adminBtn = document.getElementById('admin-btn');
+            if (api.isAdmin) {
+                adminBtn.classList.remove('hidden');
+                adminBtn.textContent = 'Admin';
+            } else {
+                adminBtn.classList.add('hidden');
+            }
+            
             loadConversations();
             showNotice('Logged in successfully', 'success');
         } else {
@@ -219,15 +229,150 @@ function displayConversations(conversations) {
     });
 }
 
+// Admin functionality
+async function loadUsers() {
+    const result = await api.admin_getAllUsers();
+    if (result.success) {
+        displayUsers(result.data);
+    } else {
+        showNotice(result.error, 'error');
+    }
+}
+
+function displayUsers(users) {
+    const container = document.getElementById('admin-users');
+    container.innerHTML = '';
+
+    users.forEach(user => {
+        const userEl = document.createElement('div');
+        userEl.className = 'user-card';
+
+        const nameEl = document.createElement('h3');
+        nameEl.textContent = user.display_name;
+        userEl.appendChild(nameEl);
+
+        const detailsEl = document.createElement('div');
+        detailsEl.innerHTML = `
+            <p><strong>Username:</strong> ${user.username}</p>
+            <p><strong>Email:</strong> ${user.email}</p>
+            <p><strong>Admin:</strong> ${user.admin === '1' ? 'Yes' : 'No'}</p>
+            <div class="token-info">
+                <p><strong>Token:</strong> ${user.valid_token || 'N/A'}</p>
+                <p><strong>Token Expiration:</strong> ${user.token_expiration || 'N/A'}</p>
+            </div>
+        `;
+        userEl.appendChild(detailsEl);
+
+        const actionsEl = document.createElement('div');
+        actionsEl.className = 'user-actions';
+
+        const editBtn = document.createElement('button');
+        editBtn.textContent = 'Edit';
+        editBtn.onclick = () => handleUserEdit(user);
+        actionsEl.appendChild(editBtn);
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.onclick = () => handleUserDelete(user.id);
+        actionsEl.appendChild(deleteBtn);
+
+        userEl.appendChild(actionsEl);
+        container.appendChild(userEl);
+    });
+}
+
+async function handleUserDelete(userId) {
+    if (confirm('Are you sure you want to delete this user?')) {
+        const result = await api.admin_deleteUser(userId);
+        if (result.success) {
+            loadUsers();
+            showNotice('User deleted successfully', 'success');
+        } else {
+            showNotice(result.error, 'error');
+        }
+    }
+}
+
+function handleUserEdit(user) {
+    const form = document.getElementById('admin-user-form');
+    document.getElementById('user-id').value = user.id;
+    document.getElementById('user-username').value = user.username;
+    document.getElementById('user-display-name').value = user.display_name;
+    document.getElementById('user-email').value = user.email;
+    document.getElementById('user-password').value = user.password || '';
+    document.getElementById('user-token').value = user.valid_token || '';
+    document.getElementById('user-token-expiration').value = user.token_expiration ? user.token_expiration.replace(' ', 'T') : '';
+    document.getElementById('user-is-admin').checked = user.admin === '1';
+    document.getElementById('save-user-btn').textContent = 'Update User';
+}
+
 function handleLogout() {
     api.logout();
     document.getElementById('login-form').classList.remove('hidden');
     document.getElementById('chat-container').classList.add('hidden');
+    document.getElementById('admin-panel').classList.add('hidden');
     showNotice('Logged out successfully', 'success');
+}
+
+function toggleAdminPanel() {
+    const adminBtn = document.getElementById('admin-btn');
+    const adminPanel = document.getElementById('admin-panel');
+    const chatContainer = document.getElementById('chat-container');
+
+    if (adminPanel.classList.contains('hidden')) {
+        // Show admin panel, hide chat
+        adminPanel.classList.remove('hidden');
+        chatContainer.classList.add('hidden');
+        adminBtn.textContent = 'Chat';
+        loadUsers();
+    } else {
+        // Show chat, hide admin panel
+        adminPanel.classList.add('hidden');
+        chatContainer.classList.remove('hidden');
+        adminBtn.textContent = 'Admin';
+    }
 }
 
 // Initialize the application when the DOM is loaded
 document.addEventListener('DOMContentLoaded', init);
 
-// Add event listener for logout button
+// Add event listeners for admin functionality
+document.getElementById('admin-btn').addEventListener('click', toggleAdminPanel);
 document.getElementById('logout-btn').addEventListener('click', handleLogout);
+
+// Initialize admin user form
+document.getElementById('admin-user-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const userId = document.getElementById('user-id').value;
+    const displayName = document.getElementById('user-display-name').value;
+    const email = document.getElementById('user-email').value;
+    const password = document.getElementById('user-password').value;
+    const username = document.getElementById('user-username').value;
+    const isAdmin = document.getElementById('user-is-admin').checked;
+
+    let result;
+    if (userId) {
+        // Update existing user
+        result = await api.admin_updateUser(userId, displayName, email, password || null);
+    } else {
+        // Add new user
+        result = await api.admin_addUser(username, password, displayName, email, isAdmin);
+    }
+
+    if (result.success) {
+        document.getElementById('admin-user-form').reset();
+        document.getElementById('user-id').value = '';
+        document.getElementById('save-user-btn').textContent = 'Add User';
+        loadUsers();
+        showNotice(userId ? 'User updated successfully' : 'User added successfully', 'success');
+    } else {
+        showNotice(result.error, 'error');
+    }
+});
+
+// Add close button functionality
+document.getElementById('admin-close-btn').addEventListener('click', () => {
+    document.getElementById('admin-panel').classList.add('hidden');
+    document.getElementById('chat-container').classList.remove('hidden');
+    document.getElementById('admin-btn').textContent = 'Admin';
+});
