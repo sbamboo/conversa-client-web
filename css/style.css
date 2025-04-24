@@ -8,6 +8,8 @@
     --text-color: #1f2937;
     --border-color: #e5e7eb;
     --text-muted: #6b7280;
+    --text-muted-2: #b5bac2;
+    --text-muted-2-primary: rgb(130, 155, 198);
 }
 
 * {
@@ -422,4 +424,17 @@ details summary:hover {
 #admin-close-btn:hover {
     background-color: var(--secondary-color);
     color: white;
+}
+
+footer p {
+    color: var(--text-muted-2);
+}
+
+footer a,footer a:visited,footer a:active {
+    color: var(--text-muted-2-primary);
+    text-decoration: none;
+}
+
+footer a:hover {
+    color: var(--primary-color);
 }
