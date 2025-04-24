@@ -143,7 +143,7 @@ export class ConversaApiV0 {
             const data = await response.json();
             return { success: data.status === "success", data };
         } catch (error) {
-            return { success: false, error: "Network error occurred" };
+            return { success: false, error: "Network error occurred: " + error.message };
         }
     }
 
@@ -172,7 +172,7 @@ export class ConversaApiV0 {
             const responseData = await response.json();
             return { success: responseData.status === "success", data: responseData };
         } catch (error) {
-            return { success: false, error: "Network error occurred" };
+            return { success: false, error: "Network error occurred" + error.message };
         }
     }
 

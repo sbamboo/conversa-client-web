@@ -74,9 +74,18 @@ export function initializeRawTab(apiUrlInput) {
                     const bodyData = JSON.parse(bodyInput.value);
 
                     const formData = new FormData();
-                    Object.entries(bodyData).forEach(([key, value]) => {
-                        formData.append(key, value);
-                    });
+                    function appendFormData(data, parentKey = '') {
+                        if (data && typeof data === 'object' && !(data instanceof File)) {
+                            Object.entries(data).forEach(([key, value]) => {
+                                const fullKey = parentKey ? `${parentKey}[${key}]` : key;
+                                appendFormData(value, fullKey);
+                            });
+                        } else {
+                            formData.append(parentKey, data);
+                        }
+                    }
+                    appendFormData(bodyData);
+
                     options.body = formData;
                 } catch (e) {
                     showNotice('Invalid JSON in request body', 'error');
