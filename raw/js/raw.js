@@ -18,45 +18,125 @@ export function initializeRawTab(apiUrlInput) {
     // Update placeholder based on HTTP method
     httpMethod.addEventListener('change', () => {
         rawInput.placeholder = httpMethod.value === 'GET' 
-            ? 'Enter parameters (e.g., ?getAll&token=xyz)' 
-            : 'Enter JSON data (e.g., {"add": "1", "data": {"title": "Hello"}})';
+            ? 'Enter parameters (e.g., ?getAll&token=xyz) or JSON' 
+            : 'Enter parameters (e.g., ?getAll&token=xyz) or JSON';
     });
+
+    function parseUrlParams(paramString) {
+        // Remove leading ? if present
+        paramString = paramString.startsWith('?') ? paramString.substring(1) : paramString;
+        
+        const params = {};
+        const pairs = paramString.split('&');
+        
+        for (const pair of pairs) {
+            const [key, value] = pair.split('=').map(decodeURIComponent);
+            
+            // Handle nested parameters (e.g., data[author])
+            if (key.includes('[') && key.includes(']')) {
+                const mainKey = key.split('[')[0];
+                const subKey = key.split('[')[1].split(']')[0];
+                
+                if (!params[mainKey]) {
+                    params[mainKey] = {};
+                }
+                params[mainKey][subKey] = value;
+            } else {
+                params[key] = value;
+            }
+        }
+        
+        return params;
+    }
+
+    function objectToUrlParams(obj) {
+        const params = [];
+        
+        for (const [key, value] of Object.entries(obj)) {
+            if (typeof value === 'object') {
+                for (const [subKey, subValue] of Object.entries(value)) {
+                    params.push(`${encodeURIComponent(key)}[${encodeURIComponent(subKey)}]=${encodeURIComponent(subValue)}`);
+                }
+            } else {
+                params.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
+            }
+        }
+        
+        return params.join('&');
+    }
 
     sendRawBtn.addEventListener('click', async () => {
         try {
             const method = httpMethod.value;
             let url = apiUrlInput.value;
+            let input = rawInput.value.trim();
             let options = {
-                method: method,
-                headers: {
-                    'Content-Type': 'application/json'
-                }
+                method: method
             };
 
+            // Handle GET requests
             if (method === 'GET') {
-                url += rawInput.value;
-            } else {
-                try {
-                    const jsonData = JSON.parse(rawInput.value);
-                    const formData = new FormData();
+                if (input.startsWith('?')) {
+                    // Direct URL parameters
+                    url += input;
+                } else if (input.startsWith('{')) {
+                    // JSON input for GET - convert to URL parameters
+                    try {
+                        const jsonData = JSON.parse(input);
+                        const urlParams = objectToUrlParams(jsonData);
+                        url += '?' + urlParams;
+                    } catch (e) {
+                        showNotice('Invalid JSON format', 'error');
+                        return;
+                    }
+                } else {
+                    showNotice('Input must start with ? or be valid JSON', 'error');
+                    return;
+                }
+            } 
+            // Handle POST/UPDATE/DELETE requests
+            else {
+                let formData;
+                
+                if (input.startsWith('?')) {
+                    // URL parameters format - convert to FormData
+                    const params = parseUrlParams(input);
+                    formData = new FormData();
                     
-                    // Convert JSON to FormData
-                    Object.entries(jsonData).forEach(([key, value]) => {
+                    for (const [key, value] of Object.entries(params)) {
                         if (typeof value === 'object') {
-                            Object.entries(value).forEach(([subKey, subValue]) => {
+                            for (const [subKey, subValue] of Object.entries(value)) {
                                 formData.append(`${key}[${subKey}]`, subValue);
-                            });
+                            }
                         } else {
                             formData.append(key, value);
                         }
-                    });
-
-                    options.body = formData;
-                    delete options.headers['Content-Type']; // Let browser set correct content type for FormData
-                } catch (e) {
-                    showNotice('Invalid JSON format', 'error');
+                    }
+                } else if (input.startsWith('{')) {
+                    // JSON format - convert to FormData
+                    try {
+                        const jsonData = JSON.parse(input);
+                        formData = new FormData();
+                        
+                        for (const [key, value] of Object.entries(jsonData)) {
+                            if (typeof value === 'object') {
+                                for (const [subKey, subValue] of Object.entries(value)) {
+                                    formData.append(`${key}[${subKey}]`, subValue);
+                                }
+                            } else {
+                                formData.append(key, value);
+                            }
+                        }
+                    } catch (e) {
+                        showNotice('Invalid JSON format', 'error');
+                        return;
+                    }
+                } else {
+                    showNotice('Input must start with ? or be valid JSON', 'error');
                     return;
                 }
+                
+                options.body = formData;
             }
             
             const response = await fetch(url, options);
