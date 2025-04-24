@@ -75,10 +75,19 @@
                             <option value="DELETE">DELETE</option>
                             <option value="UPDATE">UPDATE</option>
                         </select>
-                        <input type="text" id="rawInput" placeholder="Enter parameters (for GET) or JSON data (for other methods)">
+                        <input type="text" id="rawInput" placeholder="Enter URL parameters (e.g., ?key=value&key2=value2)">
                         <button id="sendRaw">Send</button>
                     </div>
+                    <div id="bodyContainer" class="body-input-container" style="display: none;">
+                        <textarea id="bodyInput" placeholder="Enter request body as JSON"></textarea>
+                    </div>
                     <pre id="rawOutput"></pre>
+                    <details>
+                        <summary id="toggleRawContent">Show Raw Response</summary>
+                        <div id="rawContentContainer" style="display: none;">
+                            <pre id="rawContent"></pre>
+                        </div>
+                    </details>
                 </div>
             </section>
 

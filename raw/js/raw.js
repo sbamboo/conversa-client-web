@@ -2,10 +2,13 @@ import { showNotice, formatJson } from '../../js/utils.js';
 
 export function initializeRawTab(apiUrlInput) {
     const sendRawBtn = document.getElementById('sendRaw');
-    const rawInput = document.getElementById('rawInput');
+    const urlParamsInput = document.getElementById('rawInput');
+    const bodyInput = document.getElementById('bodyInput');
     const rawOutput = document.getElementById('rawOutput');
+    const rawContent = document.getElementById('rawContent');
     const urlDisplay = document.querySelector('.api-url-display');
     const httpMethod = document.getElementById('httpMethod');
+    const bodyContainer = document.getElementById('bodyContainer');
 
     // Update URL display when API URL changes
     apiUrlInput.addEventListener('input', () => {
@@ -15,137 +18,67 @@ export function initializeRawTab(apiUrlInput) {
     // Set initial URL display
     urlDisplay.textContent = apiUrlInput.value;
 
-    // Update placeholder based on HTTP method
+    // Show/hide body input based on HTTP method
     httpMethod.addEventListener('change', () => {
-        rawInput.placeholder = httpMethod.value === 'GET' 
-            ? 'Enter parameters (e.g., ?getAll&token=xyz) or JSON' 
-            : 'Enter parameters (e.g., ?getAll&token=xyz) or JSON';
+        bodyContainer.style.display = httpMethod.value === 'GET' ? 'none' : 'block';
     });
 
-    function parseUrlParams(paramString) {
-        // Remove leading ? if present
-        paramString = paramString.startsWith('?') ? paramString.substring(1) : paramString;
-        
-        const params = {};
-        const pairs = paramString.split('&');
-        
-        for (const pair of pairs) {
-            const [key, value] = pair.split('=').map(decodeURIComponent);
-            
-            // Handle nested parameters (e.g., data[author])
-            if (key.includes('[') && key.includes(']')) {
-                const mainKey = key.split('[')[0];
-                const subKey = key.split('[')[1].split(']')[0];
-                
-                if (!params[mainKey]) {
-                    params[mainKey] = {};
-                }
-                params[mainKey][subKey] = value;
-            } else {
-                params[key] = value;
-            }
-        }
-        
-        return params;
-    }
-
-    function objectToUrlParams(obj) {
-        const params = [];
-        
-        for (const [key, value] of Object.entries(obj)) {
-            if (typeof value === 'object') {
-                for (const [subKey, subValue] of Object.entries(value)) {
-                    params.push(`${encodeURIComponent(key)}[${encodeURIComponent(subKey)}]=${encodeURIComponent(subValue)}`);
-                }
-            } else {
-                params.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
-            }
-        }
-        
-        return params.join('&');
-    }
+    // Toggle raw content visibility
+    document.getElementById('toggleRawContent').addEventListener('click', () => {
+        const content = document.getElementById('rawContentContainer');
+        content.style.display = content.style.display === 'none' ? 'block' : 'none';
+    });
 
     sendRawBtn.addEventListener('click', async () => {
         try {
-            const method = httpMethod.value;
+            const httpMethod_Value = httpMethod.value;
             let url = apiUrlInput.value;
-            let input = rawInput.value.trim();
+            const urlParams = urlParamsInput.value.trim();
+
+            // Add URL parameters if provided
+            if (urlParams) {
+                if (!urlParams.startsWith('?')) {
+                    showNotice('URL parameters must start with ?', 'error');
+                    return;
+                }
+                url += urlParams;
+            }
+
             let options = {
-                method: method
+                method: httpMethod_Value
             };
 
-            // Handle GET requests
-            if (method === 'GET') {
-                if (input.startsWith('?')) {
-                    // Direct URL parameters
-                    url += input;
-                } else if (input.startsWith('{')) {
-                    // JSON input for GET - convert to URL parameters
-                    try {
-                        const jsonData = JSON.parse(input);
-                        const urlParams = objectToUrlParams(jsonData);
-                        url += '?' + urlParams;
-                    } catch (e) {
-                        showNotice('Invalid JSON format', 'error');
-                        return;
-                    }
-                } else {
-                    showNotice('Input must start with ? or be valid JSON', 'error');
+            // Add body for non-GET requests
+            if (httpMethod_Value !== 'GET' && bodyInput.value.trim()) {
+                try {
+                    const bodyData = JSON.parse(bodyInput.value);
+
+                    const formData = new FormData();
+                    Object.entries(bodyData).forEach(([key, value]) => {
+                        formData.append(key, value);
+                    });
+                    options.body = formData;
+                } catch (e) {
+                    showNotice('Invalid JSON in request body', 'error');
                     return;
                 }
-            } 
-            // Handle POST/UPDATE/DELETE requests
-            else {
-                let formData;
-                
-                if (input.startsWith('?')) {
-                    // URL parameters format - convert to FormData
-                    const params = parseUrlParams(input);
-                    formData = new FormData();
-                    
-                    for (const [key, value] of Object.entries(params)) {
-                        if (typeof value === 'object') {
-                            for (const [subKey, subValue] of Object.entries(value)) {
-                                formData.append(`${key}[${subKey}]`, subValue);
-                            }
-                        } else {
-                            formData.append(key, value);
-                        }
-                    }
-                } else if (input.startsWith('{')) {
-                    // JSON format - convert to FormData
-                    try {
-                        const jsonData = JSON.parse(input);
-                        formData = new FormData();
-                        
-                        for (const [key, value] of Object.entries(jsonData)) {
-                            if (typeof value === 'object') {
-                                for (const [subKey, subValue] of Object.entries(value)) {
-                                    formData.append(`${key}[${subKey}]`, subValue);
-                                }
-                            } else {
-                                formData.append(key, value);
-                            }
-                        }
-                    } catch (e) {
-                        showNotice('Invalid JSON format', 'error');
-                        return;
-                    }
-                } else {
-                    showNotice('Input must start with ? or be valid JSON', 'error');
-                    return;
-                }
-                
-                options.body = formData;
             }
             
             const response = await fetch(url, options);
-            const data = await response.json();
+            const rawResponse = await response.clone().text();
+            rawContent.textContent = rawResponse;
             
-            rawOutput.innerHTML = formatJson(data);
+            try {
+                const data = await response.json();
+                rawOutput.innerHTML = formatJson(data);
+            } catch (error) {
+                showNotice(error.message, 'error');
+                rawOutput.innerHTML = formatJson({ error: error.message });
+            }
         } catch (error) {
             showNotice(error.message, 'error');
             rawOutput.innerHTML = formatJson({ error: error.message });
+            rawContent.textContent = error.message;
         }
     });
 }
