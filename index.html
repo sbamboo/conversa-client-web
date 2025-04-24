@@ -78,6 +78,12 @@
                         <input type="text" id="rawInput" placeholder="Enter URL parameters (e.g., ?key=value&key2=value2)">
                         <button id="sendRaw">Send</button>
                     </div>
+                    <details>
+                        <summary id="toggleHeaders">Add Headers</summary>
+                        <div id="headersContainer" class="body-input-container" style="display: none;">
+                            <textarea id="headersInput" placeholder="Enter headers as JSON (e.g., { &quot;Content-Type&quot;: &quot;application/json&quot; })"></textarea>
+                        </div>
+                    </details>
                     <div id="bodyContainer" class="body-input-container" style="display: none;">
                         <textarea id="bodyInput" placeholder="Enter request body as JSON"></textarea>
                     </div>

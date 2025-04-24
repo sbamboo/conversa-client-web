@@ -4,11 +4,13 @@ export function initializeRawTab(apiUrlInput) {
     const sendRawBtn = document.getElementById('sendRaw');
     const urlParamsInput = document.getElementById('rawInput');
     const bodyInput = document.getElementById('bodyInput');
+    const headersInput = document.getElementById('headersInput');
     const rawOutput = document.getElementById('rawOutput');
     const rawContent = document.getElementById('rawContent');
     const urlDisplay = document.querySelector('.api-url-display');
     const httpMethod = document.getElementById('httpMethod');
     const bodyContainer = document.getElementById('bodyContainer');
+    const headersContainer = document.getElementById('headersContainer');
 
     // Update URL display when API URL changes
     apiUrlInput.addEventListener('input', () => {
@@ -26,6 +28,12 @@ export function initializeRawTab(apiUrlInput) {
     // Toggle raw content visibility
     document.getElementById('toggleRawContent').addEventListener('click', () => {
         const content = document.getElementById('rawContentContainer');
+        content.style.display = content.style.display === 'none' ? 'block' : 'none';
+    });
+
+    // Toggle headers visibility
+    document.getElementById('toggleHeaders').addEventListener('click', () => {
+        const content = document.getElementById('headersContainer');
         content.style.display = content.style.display === 'none' ? 'block' : 'none';
     });
 
@@ -47,6 +55,18 @@ export function initializeRawTab(apiUrlInput) {
             let options = {
                 method: httpMethod_Value
             };
+
+            // Add headers if provided
+            const headersValue = headersInput.value.trim();
+            if (headersValue) {
+                try {
+                    const headers = JSON.parse(headersValue);
+                    options.headers = headers;
+                } catch (e) {
+                    showNotice('Invalid JSON in headers', 'error');
+                    return;
+                }
+            }
 
             // Add body for non-GET requests
             if (httpMethod_Value !== 'GET' && bodyInput.value.trim()) {

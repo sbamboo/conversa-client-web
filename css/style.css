@@ -47,10 +47,15 @@ nav {
     margin-bottom: 0;
     border-bottom: 2px solid var(--border-color);
     padding: 0 1rem;
+    align-items: flex-end;
+    height: 50px;
 }
 
 .tab-btn {
-    padding: 0.75rem 1.5rem;
+    margin-left: 2.5px;
+    padding: 0.5rem 1.5rem;
+    display: block;
+    height: min-content;
     border: none;
     border-radius: 0.5rem 0.5rem 0 0;
     background-color: var(--card-background-gray);
@@ -67,6 +72,7 @@ nav {
 }
 
 .tab-btn.active {
+    padding: 0.75rem 1.5rem;
     background-color: var(--card-background);
     color: var(--primary-color);
     border-color: var(--border-color);
