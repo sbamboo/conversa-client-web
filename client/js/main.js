@@ -7,7 +7,7 @@ let api;
 
 // Initialize the application
 function init() {
-    const apiUrlInput = document.getElementById('apiUrl');
+    const apiUrlInput = document.getElementById('api-url');
     api = new ConversaApiV0(apiUrlInput.value);
 
     // Update API URL when input changes
@@ -15,19 +15,11 @@ function init() {
         api.updateUrl(apiUrlInput.value);
     });
 
-    // Initialize tabs
+    // Initialize
     initializeTabs();
-    
-    // Initialize raw tab
     initializeRawTab(apiUrlInput);
-
-    // Initialize login form
     initializeLoginForm();
-
-    // Initialize message form
     initializeMessageForm();
-
-    // Initialize admin cancel button
     initializeAdminCancelButton();
 }
 
@@ -101,7 +93,7 @@ function initializeMessageForm() {
         }
     });
 
-    // Add cancel edit button
+    // Add cancel Edit button
     const cancelEditBtn = document.createElement('button');
     cancelEditBtn.textContent = 'Cancel Edit';
     cancelEditBtn.style.display = 'none';
@@ -157,7 +149,6 @@ function initializeAdminCancelButton() {
         attributes: true
     });
 
-    // Handle cancel button click
     cancelBtn.addEventListener('click', () => {
         form.reset();
         userIdInput.value = '';
@@ -214,6 +205,42 @@ function handleMessageEdit(message) {
     document.getElementById('message-form').scrollIntoView({ behavior: 'smooth' });
 }
 
+function handleUserEdit(user) {
+    // ensure copy-button click is copyPasswordToClipboard
+    const copyButton = document.getElementById('copy-password-btn');
+    if (copyButton) {
+        copyButton.onclick = copyPasswordToClipboard;
+    }
+
+    const form = document.getElementById('admin-user-form');
+    document.getElementById('user-id').value = user.id;
+    document.getElementById('user-username').value = user.username;
+    document.getElementById('user-display-name').value = user.display_name;
+    document.getElementById('user-email').value = user.email;
+    document.getElementById('user-password').value = user.password || '';
+    document.getElementById('user-is-admin').checked = user.admin === '1';
+    document.getElementById('save-user-btn').textContent = 'Update User';
+    
+    // Show copy button when editing
+    if (copyButton) {
+        copyButton.style.display = 'flex';
+    }
+
+    // Scroll to the user form
+    form.scrollIntoView({ behavior: 'smooth' });
+}
+
+// Function to handle password copy
+async function copyPasswordToClipboard() {
+    const passwordInput = document.getElementById('user-password');
+    try {
+        await navigator.clipboard.writeText(passwordInput.value);
+        showNotice('Password copied to clipboard', 'success');
+    } catch (err) {
+        showNotice('Failed to copy password', 'error');
+    }
+}
+
 function displayConversations(conversations) {
     const container = document.getElementById('conversations');
     container.innerHTML = '';
@@ -260,7 +287,6 @@ function displayConversations(conversations) {
             actionsEl.appendChild(deleteBtn);
 
             messageEl.appendChild(actionsEl);
-
             conversationEl.appendChild(messageEl);
         });
 
@@ -328,43 +354,6 @@ async function handleUserDelete(userId) {
     }
 }
 
-function handleUserEdit(user) {
-
-    // ensure copy-button click is copyPasswordToClipboard
-    const copyButton = document.querySelector('.copy-button');
-    if (copyButton) {
-        copyButton.onclick = copyPasswordToClipboard;
-    }
-
-    const form = document.getElementById('admin-user-form');
-    document.getElementById('user-id').value = user.id;
-    document.getElementById('user-username').value = user.username;
-    document.getElementById('user-display-name').value = user.display_name;
-    document.getElementById('user-email').value = user.email;
-    document.getElementById('user-password').value = user.password || '';
-    document.getElementById('user-is-admin').checked = user.admin === '1';
-    document.getElementById('save-user-btn').textContent = 'Update User';
-    
-    // Show copy button when editing
-    if (copyButton) {
-        copyButton.style.display = 'flex';
-    }
-
-    // Scroll to the user form
-    form.scrollIntoView({ behavior: 'smooth' });
-}
-
-// Function to handle password copy
-async function copyPasswordToClipboard() {
-    const passwordInput = document.getElementById('user-password');
-    try {
-        await navigator.clipboard.writeText(passwordInput.value);
-        showNotice('Password copied to clipboard', 'success');
-    } catch (err) {
-        showNotice('Failed to copy password', 'error');
-    }
-}
-
 async function handleLogout() {
     const result = await api.logout();
     if (result.message) {
@@ -420,10 +409,8 @@ document.getElementById('admin-user-form').addEventListener('submit', async (e) 
 
     let result;
     if (userId) {
-        // Update existing user
         result = await api.admin_updateUser(userId, displayName, email, password || null);
     } else {
-        // Add new user
         result = await api.admin_addUser(username, password, displayName, email, isAdmin);
     }
 
@@ -431,11 +418,13 @@ document.getElementById('admin-user-form').addEventListener('submit', async (e) 
         document.getElementById('admin-user-form').reset();
         document.getElementById('user-id').value = '';
         document.getElementById('save-user-btn').textContent = 'Add User';
+
         // Hide copy button when form is reset
-        const copyButton = document.querySelector('.copy-button');
+        const copyButton = document.getElementById('copy-password-btn');
         if (copyButton) {
             copyButton.style.display = 'none';
         }
+
         loadUsers();
         showNotice(userId ? 'User updated successfully' : 'User added successfully', 'success');
     } else {

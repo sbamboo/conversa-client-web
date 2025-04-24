@@ -35,12 +35,12 @@ header {
     margin-bottom: 2rem;
 }
 
-.apiUrlLabel {
+.api-url-label {
     display: block;
     margin-top: 20px;
 }
 
-#apiUrl {
+#api-url {
     width: 100%;
     padding: 0.75rem;
     border: 1px solid var(--border-color);
@@ -204,7 +204,7 @@ button:hover {
     max-width: 300px;
 }
 
-#rawOutput, #rawContent {
+#raw-output, #raw-content {
     background-color: #1a1a1a;
     color: #ffffff;
     padding: 1rem;

@@ -15,8 +15,8 @@
             <h1>Conversa Web Client</h1>
             <p>Version: 2025-04-24</p>
 
-            <b class="apiUrlLabel">API Url</b>
-            <input type="text" id="apiUrl" placeholder="Enter API URL" value="https://localhost/proj/conversa-local-setup/web-server/conversa.php">
+            <b class="api-url-label">API Url</b>
+            <input type="text" id="api-url" placeholder="Enter API URL" value="https://localhost/proj/conversa-local-setup/web-server/conversa.php">
         </header>
         
         <nav>
@@ -27,47 +27,47 @@
 
         <main>
             <section id="client" class="tab-content active">
-                <div id="login-form" class="card">
+                <div id="login-form" class="login-form card">
                     <h2>Login</h2>
                     <input type="text" id="username" placeholder="Username">
                     <input type="password" id="password" placeholder="Password">
-                    <button id="login-btn">Login</button>
+                    <button id="login-btn" class="login-btn">Login</button>
                 </div>
-                <div id="chat-container" class="hidden">
+                <div id="chat-container" class="chat-container hidden">
                     <div class="header-actions">
-                        <button id="admin-btn" class="hidden">Admin</button>
-                        <button id="logout-btn">Logout</button>
+                        <button id="admin-btn" class="admin-btn hidden">Admin</button>
+                        <button id="logout-btn" class="logout-btn">Logout</button>
                     </div>
-                    <div id="conversations"></div>
-                    <div id="message-form" class="card">
+                    <div id="conversations" class="conversations"></div>
+                    <div id="message-form" class="message-form card">
                         <input type="hidden" id="edit-message-id">
                         <input type="text" id="message-title" placeholder="Message Title">
                         <textarea id="message-content" placeholder="Type your message"></textarea>
                         <input type="text" id="message-image" placeholder="Image URL (optional)">
-                        <button id="send-btn">Send</button>
+                        <button id="send-btn" class="send-btn">Send</button>
                     </div>
                 </div>
-                <div id="admin-panel" class="hidden">
+                <div id="admin-panel" class="admin-panel hidden">
                     <div class="header-actions">
-                        <button id="admin-close-btn">×</button>
+                        <button id="admin-close-btn" class="admin-close-btn">×</button>
                     </div>
                     <h2>User Management</h2>
-                    <form id="admin-user-form" class="card">
+                    <form id="admin-user-form" class="admin-user-form card">
                         <input type="hidden" id="user-id">
                         <input type="text" id="user-username" placeholder="Username">
                         <input type="text" id="user-display-name" placeholder="Display Name">
                         <input type="email" id="user-email" placeholder="Email">
                         <div class="password-field-container">
                             <input type="password" id="user-password" placeholder="Password">
-                            <button type="button" class="copy-button" style="display: none;">📋</button>
+                            <button type="button" class="copy-button" id="copy-password-btn" style="display: none;">📋</button>
                         </div>
                         <div class="checkbox-group">
                             <input type="checkbox" id="user-is-admin">
                             <label for="user-is-admin">Is Admin</label>
                         </div>
-                        <button type="submit" id="save-user-btn">Add User</button>
+                        <button type="submit" id="save-user-btn" class="save-user-btn">Add User</button>
                     </form>
-                    <div id="admin-users"></div>
+                    <div id="admin-users" class="admin-users"></div>
                 </div>
             </section>
 
@@ -75,30 +75,30 @@
                 <div class="raw-container">
                     <div class="input-group">
                         <span class="api-url-display"></span>
-                        <select id="httpMethod" class="http-method-select">
+                        <select id="http-method" class="http-method-select">
                             <option value="GET">GET</option>
                             <option value="POST">POST</option>
                             <option value="DELETE">DELETE</option>
                             <option value="UPDATE">UPDATE</option>
                         </select>
-                        <input type="text" id="rawInput" placeholder="Enter URL parameters (e.g., ?key=value&key2=value2)">
-                        <button id="sendRaw">Send</button>
-                        <button id="clearRaw">Clear</button>
+                        <input type="text" id="raw-input" placeholder="Enter URL parameters (e.g., ?key=value&key2=value2)">
+                        <button id="send-raw" class="send-raw-btn">Send</button>
+                        <button id="clear-raw" class="clear-raw-btn">Clear</button>
                     </div>
                     <details>
-                        <summary id="toggleHeaders">Add Headers</summary>
-                        <div id="headersContainer" class="body-input-container" style="display: none;">
-                            <textarea id="headersInput" placeholder="Enter headers as JSON (e.g., { &quot;Content-Type&quot;: &quot;application/json&quot; })"></textarea>
+                        <summary id="toggle-headers">Add Headers</summary>
+                        <div id="headers-container" class="body-input-container" style="display: none;">
+                            <textarea id="headers-input" placeholder="Enter headers as JSON (e.g., { &quot;Content-Type&quot;: &quot;application/json&quot; })"></textarea>
                         </div>
                     </details>
-                    <div id="bodyContainer" class="body-input-container" style="display: none;">
-                        <textarea id="bodyInput" placeholder="Enter request body as JSON"></textarea>
+                    <div id="body-container" class="body-input-container" style="display: none;">
+                        <textarea id="body-input" placeholder="Enter request body as JSON"></textarea>
                     </div>
-                    <pre id="rawOutput"></pre>
+                    <pre id="raw-output"></pre>
                     <details>
-                        <summary id="toggleRawContent">Show Raw Response</summary>
-                        <div id="rawContentContainer" style="display: none;">
-                            <pre id="rawContent"></pre>
+                        <summary id="toggle-raw-content">Show Raw Response</summary>
+                        <div id="raw-content-container" style="display: none;">
+                            <pre id="raw-content"></pre>
                         </div>
                     </details>
                 </div>

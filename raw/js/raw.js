@@ -1,17 +1,16 @@
 import { showNotice, formatJson } from '../../js/utils.js';
 
 export function initializeRawTab(apiUrlInput) {
-    const sendRawBtn = document.getElementById('sendRaw');
-    const clearRawBtn = document.getElementById('clearRaw');
-    const urlParamsInput = document.getElementById('rawInput');
-    const bodyInput = document.getElementById('bodyInput');
-    const headersInput = document.getElementById('headersInput');
-    const rawOutput = document.getElementById('rawOutput');
-    const rawContent = document.getElementById('rawContent');
+    const sendRawBtn = document.getElementById('send-raw');
+    const clearRawBtn = document.getElementById('clear-raw');
+    const urlParamsInput = document.getElementById('raw-input');
+    const bodyInput = document.getElementById('body-input');
+    const headersInput = document.getElementById('headers-input');
+    const rawOutput = document.getElementById('raw-output');
+    const rawContent = document.getElementById('raw-content');
     const urlDisplay = document.querySelector('.api-url-display');
-    const httpMethod = document.getElementById('httpMethod');
-    const bodyContainer = document.getElementById('bodyContainer');
-    const headersContainer = document.getElementById('headersContainer');
+    const httpMethod = document.getElementById('http-method');
+    const bodyContainer = document.getElementById('body-container');
 
     // Update URL display when API URL changes
     apiUrlInput.addEventListener('input', () => {
@@ -27,15 +26,15 @@ export function initializeRawTab(apiUrlInput) {
     });
 
     // Toggle raw content visibility
-    document.getElementById('toggleRawContent').addEventListener('click', () => {
-        const content = document.getElementById('rawContentContainer');
+    document.getElementById('toggle-raw-content').addEventListener('click', () => {
+        const content = document.getElementById('raw-content-container');
         content.style.display = content.style.display === 'none' ? 'block' : 'none';
     });
 
     // Toggle headers visibility
-    document.getElementById('toggleHeaders').addEventListener('click', () => {
-        const content = document.getElementById('headersContainer');
-        content.style.display = content.style.display === 'none' ? 'block' : 'none';
+    document.getElementById('toggle-headers').addEventListener('click', () => {
+        const content = document.getElementById('headers-container');
+        content.style.display = headersContainer.style.display === 'none' ? 'block' : 'none';
     });
 
     clearRawBtn.addEventListener('click', () => {
@@ -48,7 +47,7 @@ export function initializeRawTab(apiUrlInput) {
 
     sendRawBtn.addEventListener('click', async () => {
         try {
-            const httpMethod_Value = httpMethod.value;
+            const httpMethodValue = httpMethod.value;
             let url = apiUrlInput.value;
             const urlParams = urlParamsInput.value.trim();
 
@@ -62,7 +61,7 @@ export function initializeRawTab(apiUrlInput) {
             }
 
             let options = {
-                method: httpMethod_Value
+                method: httpMethodValue
             };
 
             // Add headers if provided
@@ -78,7 +77,7 @@ export function initializeRawTab(apiUrlInput) {
             }
 
             // Add body for non-GET requests
-            if (httpMethod_Value !== 'GET' && bodyInput.value.trim()) {
+            if (httpMethodValue !== 'GET' && bodyInput.value.trim()) {
                 try {
                     const bodyData = JSON.parse(bodyInput.value);
 
