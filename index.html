@@ -7,10 +7,15 @@
     <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" href="./css/notice_cards.css">
     <link rel="stylesheet" href="./raw/css/json.css">
+    <link rel="stylesheet" href="./raw/css/raw.css">
 </head>
 <body>
     <div class="container">
         <header>
+            <h1>Conversa Web Client</h1>
+            <p>Version: 2025-04-24</p>
+
+            <b class="apiUrlLabel">API Url</b>
             <input type="text" id="apiUrl" placeholder="Enter API URL" value="https://localhost/proj/conversa-local-setup/web-server/conversa.php">
         </header>
         
@@ -75,6 +80,7 @@
                         </select>
                         <input type="text" id="rawInput" placeholder="Enter URL parameters (e.g., ?key=value&key2=value2)">
                         <button id="sendRaw">Send</button>
+                        <button id="clearRaw">Clear</button>
                     </div>
                     <details>
                         <summary id="toggleHeaders">Add Headers</summary>
@@ -320,6 +326,29 @@
                 </div>
             </section>
         </main>
+        <footer>
+            <div class="hflex-text">
+                <p>Conversa Web Client is made by:</p>
+                <a href="https://github.com/sbamboo" target="_blank">@sbamboo</a>
+            </div>
+            <div class="hflex-text">
+                <p>Sourcecode:</p>
+                <a href="https://github.com/sbamboo/conversa-client-web" target="_blank">sbamboo/conversa-client-web</a>
+            </div>
+            <div class="vspacer"></div>
+            <div class="hflex-text">
+                <p>Conversa is made by:</p>
+                <a href="https://github.com/stefanfolkesson" target="_blank">@stefanfolkesson</a>
+            </div>
+            <div class="hflex-text">
+                <p>Server Sourcecode:</p>
+                <a href="https://github.com/stefanfolkesson/conversa-server" target="_blank">stefanfolkesson/conversa-server</a>
+            </div>
+            <div class="hflex-text">
+                <p>Client Sourcecode:</p>
+                <a href="https://github.com/stefanfolkesson/conversa-client" target="_blank">stefanfolkesson/conversa-client</a>
+            </div>
+        </footer>
     </div>
     <script type="module" src="./client/js/main.js"></script>
 </body>

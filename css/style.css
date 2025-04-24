@@ -33,12 +33,31 @@ header {
     margin-bottom: 2rem;
 }
 
+.apiUrlLabel {
+    display: block;
+    margin-top: 20px;
+}
+
 #apiUrl {
     width: 100%;
     padding: 0.75rem;
     border: 1px solid var(--border-color);
     border-radius: 0.5rem;
     font-size: 1rem;
+}
+
+.hflex-text {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+}
+.hflex-text>* {
+    display: block;
+}
+
+.vspacer {
+    display: block;
+    height: 1rem;
 }
 
 nav {
@@ -395,11 +414,12 @@ details summary:hover {
 #admin-close-btn {
     font-size: 1.5rem;
     padding: 0.25rem 0.75rem;
-    background-color: transparent;
-    color: var(--text-color);
+    background-color: var(--primary-color);
+    color: white;
     border: 1px solid var(--border-color);
 }
 
 #admin-close-btn:hover {
-    background-color: var(--border-color);
+    background-color: var(--secondary-color);
+    color: white;
 }

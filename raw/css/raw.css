@@ -1,0 +1,10 @@
+#clearRaw {
+    background-color: transparent;
+    color: gray;
+    border: 1px solid var(--border-color);
+}
+
+#clearRaw:hover {
+    background-color: var(--card-background-gray2);
+    color: var(--primary-color);
+}

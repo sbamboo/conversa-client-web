@@ -182,17 +182,42 @@ export class ConversaApiV0 {
                 body: formData
             });
 
-            const data = await response.json();
-            return { success: data.status === "success", data };
+            let rawResponse = await response.clone().text();
+
+            try {
+                const data = await response.json();
+                return { success: data.status === "success", data };
+            } catch (error) {
+                if (rawResponse.includes('Call to undefined function')) {
+                    return { success: false, error: "Operation unsupported in the API!" };
+                } else {
+                    return { success: false, error: "Json parsing error occurred: " + error.message};
+                }
+            }
         } catch (error) {
-            return { success: false, error: "Network error occurred: " + error.message + "; " + rawData };
+            return { success: false, error: "Network error occurred: " + error.message};
         }
     }
 
-    logout() {
+    async logout() {
+        let response;
+        let toReturn = { success: true, message: "Logged out successfully" };
+        try {
+            response = await fetch(`${this.baseUrl}?logout&token=${this.token}`);
+            // check if response contains 'Call to undefined function'
+            const rawResponse = await response.clone().text();
+            if (rawResponse.includes('Call to undefined function')) {
+                toReturn = { success: false, error: "Failed to serverside-logout: Operation unsupported in the API!", message: "Clientside logged out successfully" };
+            }
+        } catch (error) {
+            toReturn = { success: false, error: "Failed to serverside-logout: Network error occurred: " + error.message, message: "Clientside logged out successfully" };
+        }
+        
         this.token = null;
         this.userId = null;
         this.isAdmin = false;
+
+        return toReturn;
     }
 
     isLoggedIn() {

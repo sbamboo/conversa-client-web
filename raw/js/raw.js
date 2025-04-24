@@ -2,6 +2,7 @@ import { showNotice, formatJson } from '../../js/utils.js';
 
 export function initializeRawTab(apiUrlInput) {
     const sendRawBtn = document.getElementById('sendRaw');
+    const clearRawBtn = document.getElementById('clearRaw');
     const urlParamsInput = document.getElementById('rawInput');
     const bodyInput = document.getElementById('bodyInput');
     const headersInput = document.getElementById('headersInput');
@@ -35,6 +36,14 @@ export function initializeRawTab(apiUrlInput) {
     document.getElementById('toggleHeaders').addEventListener('click', () => {
         const content = document.getElementById('headersContainer');
         content.style.display = content.style.display === 'none' ? 'block' : 'none';
+    });
+
+    clearRawBtn.addEventListener('click', () => {
+        //urlParamsInput.value = '';
+        //bodyInput.value = '';
+        //headersInput.value = '';
+        rawOutput.innerHTML = '';
+        rawContent.textContent = '';
     });
 
     sendRawBtn.addEventListener('click', async () => {
@@ -101,8 +110,13 @@ export function initializeRawTab(apiUrlInput) {
                 const data = await response.json();
                 rawOutput.innerHTML = formatJson(data);
             } catch (error) {
-                showNotice(error.message, 'error');
-                rawOutput.innerHTML = formatJson({ error: error.message });
+                if (rawResponse.includes('Call to undefined function')) {
+                    rawContent.textContent = error.message;
+                    showNotice('Operation unsupported in the API!', 'error')
+                } else {
+                    showNotice(error.message, 'error');
+                    rawOutput.innerHTML = formatJson({ error: error.message });
+                }
             }
         } catch (error) {
             showNotice(error.message, 'error');

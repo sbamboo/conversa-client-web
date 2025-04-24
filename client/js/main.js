@@ -342,12 +342,21 @@ function handleUserEdit(user) {
     form.scrollIntoView({ behavior: 'smooth' });
 }
 
-function handleLogout() {
-    api.logout();
+async function handleLogout() {
+    const result = await api.logout();
+    if (result.message) {
+        showNotice(result.message, 'success');
+        if (result.error || result.message) {
+            showNotice(result.error || result.message, 'warning');
+        }
+    } else {
+        if (result.error || result.message) {
+            showNotice(result.error || result.message, 'error');
+        }
+    }
     document.getElementById('login-form').classList.remove('hidden');
     document.getElementById('chat-container').classList.add('hidden');
     document.getElementById('admin-panel').classList.add('hidden');
-    showNotice('Logged out successfully', 'success');
 }
 
 function toggleAdminPanel() {
