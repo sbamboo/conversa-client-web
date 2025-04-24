@@ -329,17 +329,40 @@ async function handleUserDelete(userId) {
 }
 
 function handleUserEdit(user) {
+
+    // ensure copy-button click is copyPasswordToClipboard
+    const copyButton = document.querySelector('.copy-button');
+    if (copyButton) {
+        copyButton.onclick = copyPasswordToClipboard;
+    }
+
     const form = document.getElementById('admin-user-form');
     document.getElementById('user-id').value = user.id;
     document.getElementById('user-username').value = user.username;
     document.getElementById('user-display-name').value = user.display_name;
     document.getElementById('user-email').value = user.email;
-    document.getElementById('user-password').value = user.password;
+    document.getElementById('user-password').value = user.password || '';
     document.getElementById('user-is-admin').checked = user.admin === '1';
     document.getElementById('save-user-btn').textContent = 'Update User';
+    
+    // Show copy button when editing
+    if (copyButton) {
+        copyButton.style.display = 'flex';
+    }
 
     // Scroll to the user form
     form.scrollIntoView({ behavior: 'smooth' });
+}
+
+// Function to handle password copy
+async function copyPasswordToClipboard() {
+    const passwordInput = document.getElementById('user-password');
+    try {
+        await navigator.clipboard.writeText(passwordInput.value);
+        showNotice('Password copied to clipboard', 'success');
+    } catch (err) {
+        showNotice('Failed to copy password', 'error');
+    }
 }
 
 async function handleLogout() {
@@ -408,6 +431,11 @@ document.getElementById('admin-user-form').addEventListener('submit', async (e) 
         document.getElementById('admin-user-form').reset();
         document.getElementById('user-id').value = '';
         document.getElementById('save-user-btn').textContent = 'Add User';
+        // Hide copy button when form is reset
+        const copyButton = document.querySelector('.copy-button');
+        if (copyButton) {
+            copyButton.style.display = 'none';
+        }
         loadUsers();
         showNotice(userId ? 'User updated successfully' : 'User added successfully', 'success');
     } else {

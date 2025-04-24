@@ -57,7 +57,10 @@
                         <input type="text" id="user-username" placeholder="Username">
                         <input type="text" id="user-display-name" placeholder="Display Name">
                         <input type="email" id="user-email" placeholder="Email">
-                        <input type="password" id="user-password" placeholder="Password">
+                        <div class="password-field-container">
+                            <input type="password" id="user-password" placeholder="Password">
+                            <button type="button" class="copy-button" style="display: none;">📋</button>
+                        </div>
                         <div class="checkbox-group">
                             <input type="checkbox" id="user-is-admin">
                             <label for="user-is-admin">Is Admin</label>

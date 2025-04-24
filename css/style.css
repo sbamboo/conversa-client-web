@@ -426,6 +426,36 @@ details summary:hover {
     color: white;
 }
 
+.password-field-container {
+    position: relative;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.password-field-container input {
+    margin-bottom: 0;
+}
+
+.copy-button {
+    padding: 0.5rem;
+    min-width: 40px;
+    height: 40px;
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.copy-button:hover {
+    background-color: var(--secondary-color);
+}
+
 footer p {
     color: var(--text-muted-2);
 }
