@@ -23,6 +23,70 @@ function init() {
     initializeMessageForm();
     initializeAdminCancelButton();
     initializeSortButton();
+    initializeJsonImport();
+}
+
+function initializeJsonImport() {
+    const headerActions = document.querySelector('#admin-panel .header-actions');
+    const importBtn = document.createElement('button');
+    importBtn.textContent = 'Import from JSON';
+    importBtn.className = 'import-json-btn';
+    headerActions.insertBefore(importBtn, headerActions.firstChild);
+
+    const modal = document.getElementById('json-import-modal');
+    const closeBtn = modal.querySelector('.modal-close');
+    const importJsonBtn = document.getElementById('import-json-btn');
+
+    importBtn.addEventListener('click', () => {
+        modal.style.display = 'flex';
+    });
+
+    closeBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
+
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+
+    importJsonBtn.addEventListener('click', async () => {
+        const jsonInput = document.getElementById('json-import-input').value;
+        try {
+            const data = JSON.parse(jsonInput);
+            
+            // Import users
+            if (data.users && Array.isArray(data.users)) {
+                for (const [username, password, displayName, email = `${username}@example.com`] of data.users) {
+                    const result = await api.admin_addUser(username, password, displayName, email, false);
+                    if (result.success) {
+                        showNotice(`User '${username}' imported successfully`, 'success');
+                    } else {
+                        showNotice(`Failed to import user '${username}': ${result.error}`, 'error');
+                    }
+                }
+            }
+
+            // Import messages
+            if (data.data && Array.isArray(data.data)) {
+                for (const [username, title, message, image = ''] of data.data) {
+                    const result = await api.sendMessage(title, message, image);
+                    if (result.success) {
+                        showNotice(`Message for '${username}' imported successfully`, 'success');
+                    } else {
+                        showNotice(`Failed to import message for '${username}': ${result.error}`, 'error');
+                    }
+                }
+            }
+
+            modal.style.display = 'none';
+            loadUsers();
+            loadConversations();
+        } catch (error) {
+            showNotice('Invalid JSON format', 'error');
+        }
+    });
 }
 
 function initializeSortButton() {
@@ -33,7 +97,6 @@ function initializeSortButton() {
         loadConversations();
     });
 }
-
 
 function initializeLoginForm() {
     const loginForm = document.getElementById('login-form');

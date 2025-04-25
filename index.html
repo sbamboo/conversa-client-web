@@ -354,6 +354,16 @@
             </div>
         </footer>
     </div>
+
+    <div id="json-import-modal" class="modal-overlay" style="display: none;">
+        <div class="modal">
+            <button class="modal-close">×</button>
+            <h2>Import from JSON</h2>
+            <textarea id="json-import-input" placeholder='{"users":[["username","pass","disp"]], "data":[["username","title","msg","img.jpg"]]}' rows="10"></textarea>
+            <button id="import-json-btn">Import</button>
+        </div>
+    </div>
+
     <script type="module" src="./client/js/main.js"></script>
 </body>
 </html>
