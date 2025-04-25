@@ -13,33 +13,45 @@ export class ConversaApiV0 {
     async login(username, password) {
         try {
             const response = await fetch(`${this.baseUrl}?validate&username=${username}&password=${password}`);
-            const data = await response.json();
-            
-            if (data.status === "success") {
-                this.token = data.token;
-                this.userId = data.id;
-                this.isAdmin = data.admin;
-                return { success: true, data };
+            const rawResponse = await response.clone().text();
+            try {
+                const data = await response.json();
+                
+                if (data.status === "success") {
+                    this.token = data.token;
+                    this.userId = data.id;
+                    this.isAdmin = data.admin;
+                    return { success: true, data };
+                }
+                
+                return { success: false, error: data.message };
+            } catch (error) {
+                //console.log(rawResponse);
+                return { success: false, error: "Network error occurred: "+error.message };
             }
-            
-            return { success: false, error: data.message };
         } catch (error) {
-            return { success: false, error: "Network error occurred" };
+            return { success: false, error: "Network error occurred: "+error.message };
         }
     }
 
     async getAllMessages() {
         try {
             const response = await fetch(`${this.baseUrl}?getAll&token=${this.token}`);
-            const data = await response.json();
-            
-            if (Array.isArray(data)) {
-                return { success: true, data };
+            const rawResponse = await response.clone().text();
+            try {
+                const data = await response.json();
+                
+                if (Array.isArray(data)) {
+                    return { success: true, data };
+                }
+                
+                return { success: false, error: "Invalid response format" };
+            } catch (error) {
+                //console.log(rawResponse);
+                return { success: false, error: "Network error occurred: "+error.message };
             }
-            
-            return { success: false, error: "Invalid response format" };
         } catch (error) {
-            return { success: false, error: "Network error occurred" };
+            return { success: false, error: "Network error occurred: "+error.message };
         }
     }
 
@@ -57,10 +69,17 @@ export class ConversaApiV0 {
                 body: formData
             });
 
-            const data = await response.json();
-            return { success: data.status === "success", data };
+            const rawResponse = await response.clone().text();
+
+            try {
+                const data = await response.json();
+                return { success: data.status === "success", data };
+            } catch (error) {
+                //console.log(rawResponse);
+                return { success: false, error: "Network error occurred: "+error.message };
+            }
         } catch (error) {
-            return { success: false, error: "Network error occurred" };
+            return { success: false, error: "Network error occurred: "+error.message };
         }
     }
 
@@ -79,10 +98,17 @@ export class ConversaApiV0 {
                 body: formData
             });
 
-            const data = await response.json();
-            return { success: data.status === "success", data };
+            const rawResponse = await response.clone().text();
+
+            try {
+                const data = await response.json();
+                return { success: data.status === "success", data };
+            } catch (error) {
+                //console.log(rawResponse);
+                return { success: false, error: "Network error occurred: "+error.message };
+            }
         } catch (error) {
-            return { success: false, error: "Network error occurred" };
+            return { success: false, error: "Network error occurred: "+error.message };
         }
     }
 
@@ -97,10 +123,17 @@ export class ConversaApiV0 {
                 body: formData
             });
 
-            const data = await response.json();
-            return { success: data.status === "success", data };
+            const rawResponse = await response.clone().text();
+
+            try {
+                const data = await response.json();
+                return { success: data.status === "success", data };
+            } catch (error) {
+                //console.log(rawResponse);
+                return { success: false, error: "Network error occurred: "+error.message };
+            }
         } catch (error) {
-            return { success: false, error: "Network error occurred" };
+            return { success: false, error: "Network error occurred: "+error.message };
         }
     }
 
@@ -115,10 +148,17 @@ export class ConversaApiV0 {
                 body: formData
             });
 
-            const data = await response.json();
-            return { success: Array.isArray(data), data };
+            const rawResponse = await response.clone().text();
+
+            try {
+                const data = await response.json();
+                return { success: Array.isArray(data), data };
+            } catch (error) {
+                //console.log(rawResponse);
+                return { success: false, error: "Network error occurred: "+error.message };
+            }
         } catch (error) {
-            return { success: false, error: "Network error occurred" };
+            return { success: false, error: "Network error occurred: "+error.message };
         }
     }
 
@@ -137,8 +177,15 @@ export class ConversaApiV0 {
                 body: formData
             });
 
-            const data = await response.json();
-            return { success: data.status === "success", data };
+            const rawResponse = await response.clone().text();
+
+            try {
+                const data = await response.json();
+                return { success: data.status === "success", data };
+            } catch (error) {
+                //console.log(rawResponse);
+                return { success: false, error: "Network error occurred: "+error.message };
+            }
         } catch (error) {
             return { success: false, error: "Network error occurred: " + error.message };
         }
@@ -164,8 +211,15 @@ export class ConversaApiV0 {
                 body: formData
             });
 
-            const responseData = await response.json();
-            return { success: responseData.status === "success", data: responseData };
+            const rawResponse = await response.clone().text();
+
+            try {
+                const responseData = await response.json();
+                return { success: responseData.status === "success", data: responseData };
+            } catch (error) {
+                //console.log(rawResponse);
+                return { success: false, error: "Network error occurred: "+error.message };
+            }
         } catch (error) {
             return { success: false, error: "Network error occurred" + error.message };
         }
@@ -191,6 +245,7 @@ export class ConversaApiV0 {
                 if (rawResponse.includes('Call to undefined function')) {
                     return { success: false, error: "Operation unsupported in the API!" };
                 } else {
+                    //console.log(rawResponse);
                     return { success: false, error: "Json parsing error occurred: " + error.message};
                 }
             }

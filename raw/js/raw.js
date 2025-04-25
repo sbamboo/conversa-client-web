@@ -33,8 +33,8 @@ export function initializeRawTab(apiUrlInput) {
 
     // Toggle headers visibility
     document.getElementById('toggle-headers').addEventListener('click', () => {
-        const content = document.getElementById('headers-container');
-        content.style.display = headersContainer.style.display === 'none' ? 'block' : 'none';
+        const headersContainer = document.getElementById('headers-container');
+        headersContainer.style.display = headersContainer.style.display === 'none' ? 'block' : 'none';
     });
 
     clearRawBtn.addEventListener('click', () => {

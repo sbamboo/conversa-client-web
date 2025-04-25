@@ -19,11 +19,15 @@ function init() {
 
     // Initialize key tracking
     document.addEventListener('keydown', (e) => {
-        heldDownKeys.add(e.key.toLowerCase());
+        if (e.key) {
+            heldDownKeys.add(e.key.toLowerCase());
+        }
     });
 
     document.addEventListener('keyup', (e) => {
-        heldDownKeys.delete(e.key.toLowerCase());
+        if (e.key) {
+            heldDownKeys.delete(e.key.toLowerCase());
+        }
     });
 
     // Clear held keys when window loses focus
