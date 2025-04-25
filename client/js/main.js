@@ -54,6 +54,12 @@ function initializeKeyboardNavigation() {
 
         e.preventDefault();
 
+        // If it's a button, click it
+        if (activeElement.tagName === 'BUTTON') {
+            activeElement.click();
+            return;
+        }
+
         // Login form navigation
         if (activeElement.id === 'username') {
             document.getElementById('password').focus();
