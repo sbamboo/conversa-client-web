@@ -11,6 +11,7 @@ export function initializeRawTab(apiUrlInput) {
     const urlDisplay = document.querySelector('.api-url-display');
     const httpMethod = document.getElementById('http-method');
     const bodyContainer = document.getElementById('body-container');
+    const lastTokenElement = document.getElementById('last-token');
 
     // Update URL display when API URL changes
     apiUrlInput.addEventListener('input', () => {
@@ -44,6 +45,11 @@ export function initializeRawTab(apiUrlInput) {
         rawOutput.innerHTML = '';
         rawContent.textContent = '';
     });
+
+    function extractTokenFromParams(params) {
+        const searchParams = new URLSearchParams(params);
+        return searchParams.get('token');
+    }
 
     sendRawBtn.addEventListener('click', async () => {
         try {
@@ -108,6 +114,13 @@ export function initializeRawTab(apiUrlInput) {
             try {
                 const data = await response.json();
                 rawOutput.innerHTML = formatJson(data);
+
+                // Check for token in URL parameters
+                if (data && data.token) {
+                    if (data["token"]) {
+                        lastTokenElement.textContent = `Last token: ${data.token}`;
+                    }
+                }
             } catch (error) {
                 if (rawResponse.includes('Call to undefined function')) {
                     rawContent.textContent = error.message;
