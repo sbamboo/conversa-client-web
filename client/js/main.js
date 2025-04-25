@@ -5,6 +5,7 @@ import { initializeRawTab } from '../../raw/js/raw.js';
 
 let api;
 let newestFirst = false;
+const heldDownKeys = new Set();
 
 // Initialize the application
 function init() {
@@ -14,6 +15,20 @@ function init() {
     // Update API URL when input changes
     apiUrlInput.addEventListener('input', () => {
         api.updateUrl(apiUrlInput.value);
+    });
+
+    // Initialize key tracking
+    document.addEventListener('keydown', (e) => {
+        heldDownKeys.add(e.key.toLowerCase());
+    });
+
+    document.addEventListener('keyup', (e) => {
+        heldDownKeys.delete(e.key.toLowerCase());
+    });
+
+    // Clear held keys when window loses focus
+    window.addEventListener('blur', () => {
+        heldDownKeys.clear();
     });
 
     // Initialize
@@ -267,14 +282,16 @@ function groupMessagesByConversation(messages) {
 }
 
 async function handleMessageDelete(messageId) {
-    if (confirm('Are you sure you want to delete this message?')) {
-        const result = await api.deleteMessage(messageId);
-        if (result.success) {
-            loadConversations();
-            showNotice('Message deleted successfully', 'success');
-        } else {
-            showNotice(result.error, 'error');
-        }
+    if (!heldDownKeys.has('control') && !confirm('Are you sure you want to delete this message?')) {
+        return;
+    }
+
+    const result = await api.deleteMessage(messageId);
+    if (result.success) {
+        loadConversations();
+        showNotice('Message deleted successfully', 'success');
+    } else {
+        showNotice(result.error, 'error');
     }
 }
 
@@ -427,14 +444,16 @@ function displayUsers(users) {
 }
 
 async function handleUserDelete(userId) {
-    if (confirm('Are you sure you want to delete this user?')) {
-        const result = await api.admin_deleteUser(userId);
-        if (result.success) {
-            loadUsers();
-            showNotice('User deleted successfully', 'success');
-        } else {
-            showNotice(result.error, 'error');
-        }
+    if (!heldDownKeys.has('control') && !confirm('Are you sure you want to delete this user?')) {
+        return;
+    }
+
+    const result = await api.admin_deleteUser(userId);
+    if (result.success) {
+        loadUsers();
+        showNotice('User deleted successfully', 'success');
+    } else {
+        showNotice(result.error, 'error');
     }
 }
 
