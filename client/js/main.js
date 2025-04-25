@@ -39,6 +39,56 @@ function init() {
     initializeAdminCancelButton();
     initializeSortButton();
     initializeJsonImport();
+    initializeKeyboardNavigation();
+}
+
+function initializeKeyboardNavigation() {
+    document.addEventListener('keypress', (e) => {
+        if (e.key !== 'Enter') return;
+
+        const activeElement = document.activeElement;
+        if (!activeElement) return;
+
+        // Don't handle enter if shift is pressed (for textareas)
+        if (e.shiftKey && (activeElement.tagName === 'TEXTAREA')) return;
+
+        e.preventDefault();
+
+        // Login form navigation
+        if (activeElement.id === 'username') {
+            document.getElementById('password').focus();
+        }
+        else if (activeElement.id === 'password') {
+            document.getElementById('login-btn').click();
+        }
+        // Message form navigation
+        else if (activeElement.id === 'message-title') {
+            document.getElementById('message-content').focus();
+        }
+        else if (activeElement.id === 'message-content') {
+            document.getElementById('message-image').focus();
+        }
+        else if (activeElement.id === 'message-image') {
+            document.getElementById('send-btn').focus();
+        }
+        // Admin user form navigation
+        else if (activeElement.id === 'user-username') {
+            document.getElementById('user-display-name').focus();
+        }
+        else if (activeElement.id === 'user-display-name') {
+            document.getElementById('user-email').focus();
+        }
+        else if (activeElement.id === 'user-email') {
+            document.getElementById('user-password').focus();
+        }
+        else if (activeElement.id === 'user-password') {
+            document.getElementById('save-user-btn').focus();
+        }
+        // JSON import navigation
+        else if (activeElement.id === 'json-import-input') {
+            document.getElementById('import-json-btn').focus();
+        }
+    });
 }
 
 function initializeJsonImport() {
