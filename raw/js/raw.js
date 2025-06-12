@@ -12,6 +12,7 @@ export function initializeRawTab(apiUrlInput) {
     const httpMethod = document.getElementById('http-method');
     const bodyContainer = document.getElementById('body-container');
     const lastTokenElement = document.getElementById('last-token');
+    let currentToken = null;
 
     // Update URL display when API URL changes
     apiUrlInput.addEventListener('input', () => {
@@ -46,6 +47,25 @@ export function initializeRawTab(apiUrlInput) {
         rawContent.textContent = '';
     });
 
+    function updateTokenDisplay(token) {
+        currentToken = token;
+        const maskedToken = '*'.repeat(token.length);
+        lastTokenElement.innerHTML = `
+            <span>Last token: ${maskedToken}</span>
+            <button class="copy-button" onclick="this.textContent='📋'; setTimeout(() => this.textContent='Copy', 2000)">Copy</button>
+        `;
+        
+        const copyButton = lastTokenElement.querySelector('.copy-button');
+        copyButton.addEventListener('click', async () => {
+            try {
+                await navigator.clipboard.writeText(currentToken);
+                //showNotice('Token copied to clipboard', 'success');
+            } catch (err) {
+                showNotice('Failed to copy token', 'error');
+            }
+        });
+    }
+
     function extractTokenFromParams(params) {
         const searchParams = new URLSearchParams(params);
         return searchParams.get('token');
@@ -64,6 +84,14 @@ export function initializeRawTab(apiUrlInput) {
                     return;
                 }
                 url += urlParams;
+
+                // Check for token in URL parameters
+                if (urlParams.includes('token=')) {
+                    const token = extractTokenFromParams(urlParams);
+                    if (token) {
+                        updateTokenDisplay(token);
+                    }
+                }
             }
 
             let options = {
@@ -115,11 +143,9 @@ export function initializeRawTab(apiUrlInput) {
                 const data = await response.json();
                 rawOutput.innerHTML = formatJson(data);
 
-                // Check for token in URL parameters
-                if (data && data.token) {
-                    if (data["token"]) {
-                        lastTokenElement.textContent = `Last token: ${data.token}`;
-                    }
+                // Check for token in response
+                if (data && data.token && url.includes("?validate")) { //MARK:Assumption
+                    updateTokenDisplay(data.token);
                 }
             } catch (error) {
                 if (rawResponse.includes('Call to undefined function')) {

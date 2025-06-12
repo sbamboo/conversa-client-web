@@ -57,6 +57,25 @@ header {
     border-radius: 0.5rem;
     font-family: monospace;
     color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.last-token .copy-button {
+    padding: 0.5rem 1rem;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: background-color 0.2s;
+}
+
+.last-token .copy-button:hover {
+    background-color: var(--secondary-color);
 }
 
 .hflex-text {
@@ -493,7 +512,7 @@ footer a:hover {
 
 .modal-overlay {
     position: fixed;
-    top:  0;
+    top: 0;
     left: 0;
     width: 100%;
     height: 100%;
